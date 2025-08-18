@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "merchants",
+  "info": {
+    "singularName": "merchant",
+    "pluralName": "merchants",
+    "displayName": "Merchant"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "merchant_name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "merchant_name"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "site_url": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "text"
+    },
+    "store_description": {
+      "type": "blocks"
+    },
+    "default_affiliate_link": {
+      "type": "string"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    },
+    "canonical_url": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0
+    },
+    "robots": {
+      "type": "string",
+      "default": "index,follow"
+    },
+    "coupons": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::coupon.coupon",
+      "mappedBy": "merchant"
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK"
+      ]
+    }
+  }
+}

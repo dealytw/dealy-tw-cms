@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "topics",
+  "info": {
+    "singularName": "topic",
+    "pluralName": "topics",
+    "displayName": "Topic"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK"
+      ]
+    },
+    "intro": {
+      "type": "text"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    },
+    "featured_merchants": {
+      "type": "component",
+      "component": "topic.topic-merchant",
+      "repeatable": true
+    },
+    "flash_deals": {
+      "type": "component",
+      "component": "topic.topic-coupon",
+      "repeatable": true
+    }
+  }
+}

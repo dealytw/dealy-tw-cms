@@ -1,0 +1,95 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coupons",
+  "info": {
+    "singularName": "coupon",
+    "pluralName": "coupons",
+    "displayName": "Coupon"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "coupon_uid": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "merchant": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::merchant.merchant",
+      "inversedBy": "coupons"
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK"
+      ]
+    },
+    "coupon_title": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "coupon_type": {
+      "type": "enumeration",
+      "enum": [
+        "promo_code",
+        "coupon",
+        "discount"
+      ]
+    },
+    "affiliate_link": {
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "editor_tips": {
+      "type": "blocks"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0
+    },
+    "starts_at": {
+      "type": "date"
+    },
+    "expires_at": {
+      "type": "date"
+    },
+    "coupon_status": {
+      "type": "enumeration",
+      "default": "active",
+      "enum": [
+        "active",
+        "expired",
+        "scheduled",
+        "archived"
+      ]
+    },
+    "user_count": {
+      "type": "integer"
+    },
+    "last_click_at": {
+      "type": "datetime"
+    },
+    "display_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "site": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_topic_topic_coupons",
+  "info": {
+    "displayName": "topic_coupon"
+  },
+  "options": {},
+  "attributes": {
+    "coupon": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::coupon.coupon"
+    }
+  },
+  "config": {}
+}
