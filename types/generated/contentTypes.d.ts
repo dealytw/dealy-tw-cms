@@ -384,26 +384,45 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    affiliate_link: Schema.Attribute.String & Schema.Attribute.Required;
-    code: Schema.Attribute.String;
+    affiliate_id: Schema.Attribute.String;
+    affiliate_link: Schema.Attribute.String;
+    ai_generated: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    ai_source: Schema.Attribute.String;
+    approval_status: Schema.Attribute.Enumeration<
+      ['draft', 'pending_review', 'approved', 'rejected']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'draft'>;
+    commission_rate: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    conversion_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    coupon_code: Schema.Attribute.String;
+    coupon_description: Schema.Attribute.Text;
+    coupon_discount: Schema.Attribute.String;
+    coupon_expiry: Schema.Attribute.Date;
+    coupon_image: Schema.Attribute.Media<'images'>;
+    coupon_link: Schema.Attribute.String;
     coupon_status: Schema.Attribute.Enumeration<
-      ['active', 'expired', 'scheduled', 'archived']
+      ['active', 'expired', 'archived']
     > &
       Schema.Attribute.DefaultTo<'active'>;
+    coupon_terms: Schema.Attribute.RichText;
     coupon_title: Schema.Attribute.String & Schema.Attribute.Required;
     coupon_type: Schema.Attribute.Enumeration<
-      ['promo_code', 'coupon', 'discount']
+      ['discount', 'free_shipping', 'deal']
     >;
-    coupon_uid: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    coupon_uid: Schema.Attribute.String & Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
     display_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    editor_tips: Schema.Attribute.Blocks;
-    expires_at: Schema.Attribute.Date;
+    expiration_date: Schema.Attribute.Date;
     last_click_at: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -413,15 +432,70 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     market: Schema.Attribute.Enumeration<['TW', 'HK']>;
     merchant: Schema.Attribute.Relation<'manyToOne', 'api::merchant.merchant'>;
+    page_description: Schema.Attribute.Text;
+    page_title: Schema.Attribute.String;
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
-    site: Schema.Attribute.String;
-    starts_at: Schema.Attribute.Date;
+    rating_stats: Schema.Attribute.Component<'rating.rating-stats', false>;
+    revenue_generated: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    reviewer_notes: Schema.Attribute.Text;
+    scheduled_publish_date: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'coupon_title'>;
+    tracking_code: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    user_count: Schema.Attribute.Integer;
-    value: Schema.Attribute.String;
+    user_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface ApiMerchantCategoryMerchantCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'merchant_categories';
+  info: {
+    description: 'Categories for organizing merchants by type, industry, or theme';
+    displayName: 'Merchant Category';
+    pluralName: 'merchant-categories';
+    singularName: 'merchant-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    color: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    icon: Schema.Attribute.Media<'images'>;
+    is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::merchant-category.merchant-category'
+    > &
+      Schema.Attribute.Private;
+    merchants: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::merchant.merchant'
+    >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    seo_description: Schema.Attribute.Text;
+    seo_title: Schema.Attribute.String;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    sort_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -436,28 +510,41 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    auto_seo_enabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
+    blog_intro: Schema.Attribute.Text;
     canonical_url: Schema.Attribute.String;
+    categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::merchant-category.merchant-category'
+    >;
     coupons: Schema.Attribute.Relation<'oneToMany', 'api::coupon.coupon'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    default_affiliate_link: Schema.Attribute.String;
-    is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    faq: Schema.Attribute.Component<'merchant.faq', true>;
+    full_blog_content: Schema.Attribute.Blocks;
+    how_to_use: Schema.Attribute.Blocks;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::merchant.merchant'
     > &
       Schema.Attribute.Private;
-    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    market: Schema.Attribute.Enumeration<['TW', 'HK']>;
+    logo: Schema.Attribute.Media<'images'>;
     merchant_name: Schema.Attribute.String;
-    priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    meta_keywords: Schema.Attribute.Text;
+    page_approach: Schema.Attribute.Enumeration<
+      ['coupon_page', 'blog_page', 'both']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'both'>;
+    page_description: Schema.Attribute.Text;
+    page_title: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    robots: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'index,follow'>;
     seo_description: Schema.Attribute.Text;
     seo_title: Schema.Attribute.String;
+    short_intro: Schema.Attribute.Text;
     site_url: Schema.Attribute.String;
     slug: Schema.Attribute.UID<'merchant_name'>;
     store_description: Schema.Attribute.Blocks;
@@ -465,6 +552,44 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiRatingRating extends Struct.CollectionTypeSchema {
+  collectionName: 'ratings';
+  info: {
+    description: 'User ratings for coupons (thumbs up/down feedback)';
+    displayName: 'Coupon Rating';
+    pluralName: 'ratings';
+    singularName: 'rating';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    coupon_id: Schema.Attribute.String & Schema.Attribute.Required;
+    coupon_uid: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    feedback_comment: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::rating.rating'
+    > &
+      Schema.Attribute.Private;
+    merchant_id: Schema.Attribute.String & Schema.Attribute.Required;
+    placement: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    rating_type: Schema.Attribute.Enumeration<['thumbs_up', 'thumbs_down']> &
+      Schema.Attribute.Required;
+    session_id: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_agent: Schema.Attribute.Text;
+    user_ip: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -1013,7 +1138,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::coupon.coupon': ApiCouponCoupon;
+      'api::merchant-category.merchant-category': ApiMerchantCategoryMerchantCategory;
       'api::merchant.merchant': ApiMerchantMerchant;
+      'api::rating.rating': ApiRatingRating;
       'api::topic.topic': ApiTopicTopic;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
