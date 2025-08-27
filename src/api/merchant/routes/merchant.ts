@@ -23,5 +23,3 @@ export default factories.createCoreRouter('api::merchant.merchant', {
     },
   },
 });
-
-// Custom routes will be added via the admin panel or separate route files

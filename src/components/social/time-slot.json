@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_social_time_slots",
+  "info": {
+    "displayName": "Time Slot",
+    "description": "Specific time slot for posting"
+  },
+  "options": {},
+  "attributes": {
+    "start_time": {
+      "type": "time",
+      "required": true
+    },
+    "end_time": {
+      "type": "time",
+      "required": true
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "notes": {
+      "type": "text",
+      "description": "Notes about this time slot"
+    }
+  }
+}

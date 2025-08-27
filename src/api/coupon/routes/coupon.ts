@@ -23,17 +23,17 @@ export default {
       }
     },
     {
-      method: 'POST',
-      path: '/coupons/admin/create',
-      handler: 'coupon.createCoupon',
+      method: 'PUT',
+      path: '/coupons/admin/:id',
+      handler: 'coupon.updateCoupon',
       config: {
         auth: false
       }
     },
     {
-      method: 'PUT',
-      path: '/coupons/admin/:id',
-      handler: 'coupon.updateCoupon',
+      method: 'POST',
+      path: '/coupons/admin/create',
+      handler: 'coupon.createCoupon',
       config: {
         auth: false
       }

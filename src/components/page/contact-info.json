@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_page_contact_infos",
+  "info": {
+    "displayName": "Contact Info",
+    "description": "Contact information for contact pages"
+  },
+  "options": {},
+  "attributes": {
+    "company_name": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "website": {
+      "type": "string"
+    },
+    "business_hours": {
+      "type": "text"
+    },
+    "map_embed": {
+      "type": "text",
+      "description": "Google Maps embed code or coordinates"
+    }
+  }
+}

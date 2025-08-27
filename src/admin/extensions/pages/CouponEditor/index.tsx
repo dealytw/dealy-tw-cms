@@ -17,7 +17,7 @@ import {
   Tr,
   Td,
   Th,
-} from '@strapi/design-system';
+} from '@strapi/strapi/admin';
 import { Plus, Pencil, Trash, Check, Cross } from '@strapi/icons';
 
 interface Coupon {

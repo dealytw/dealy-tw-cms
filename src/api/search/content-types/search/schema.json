@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "searches",
+  "info": {
+    "singularName": "search",
+    "pluralName": "searches",
+    "displayName": "Search",
+    "description": "Search functionality for merchants, coupons, categories, and topics"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "query": {
+      "type": "string",
+      "required": true
+    },
+    "search_type": {
+      "type": "enumeration",
+      "enum": [
+        "merchant",
+        "coupon",
+        "category",
+        "topic",
+        "all"
+      ],
+      "default": "all"
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK",
+        "JP",
+        "KR",
+        "MY",
+        "SG",
+        "THAI",
+        "VIET",
+        "INDONESIA"
+      ]
+    },
+    "category_filter": {
+      "type": "string"
+    },
+    "coupon_type_filter": {
+      "type": "enumeration",
+      "enum": [
+        "discount",
+        "free_shipping",
+        "deal"
+      ]
+    },
+    "results_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "user_ip": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "text"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "search_date": {
+      "type": "datetime",
+      "default": "now"
+    }
+  }
+}

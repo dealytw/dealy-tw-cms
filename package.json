@@ -12,10 +12,19 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "deploy:sg": "NODE_ENV=production strapi deploy",
+    "deploy:asia": "NODE_ENV=production strapi deploy",
+    "db:backup": "pg_dump $DATABASE_URL > backup_$(date +%Y%m%d_%H%M%S).sql",
+    "db:restore": "psql $DATABASE_URL < backup_file.sql",
+    "health": "curl -s http://localhost:1337/api/health || echo 'Health check failed'",
+    "pm2:start": "pm2 start npm --name 'strapi' -- start",
+    "pm2:stop": "pm2 stop strapi",
+    "pm2:restart": "pm2 restart strapi",
+    "pm2:logs": "pm2 logs strapi",
+    "pm2:status": "pm2 status"
   },
   "dependencies": {
-    "@strapi/design-system": "^1.19.0",
     "@strapi/icons": "^1.19.0",
     "@strapi/plugin-cloud": "5.22.0",
     "@strapi/plugin-users-permissions": "5.22.0",
@@ -38,6 +47,6 @@
   },
   "strapi": {
     "uuid": "708e95b2-2c6e-4e58-b39e-f0da9c2684c7",
-    "installId": "03d25f9d6dc122a0602701f9fd901d42f789f1afc1fda401f3122367b3ecab0e"
+    "installId": "03d25f6dc122a0602701f9fd901d42f789f1afc1fda401f3122367b3ecab0e"
   }
 }

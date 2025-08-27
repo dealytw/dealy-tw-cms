@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_social_engagement_metrics",
+  "info": {
+    "displayName": "Engagement Metrics",
+    "description": "Recent engagement metrics for social media accounts"
+  },
+  "options": {},
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "likes": {
+      "type": "integer",
+      "default": 0
+    },
+    "comments": {
+      "type": "integer",
+      "default": 0
+    },
+    "shares": {
+      "type": "integer",
+      "default": 0
+    },
+    "clicks": {
+      "type": "integer",
+      "default": 0
+    },
+    "impressions": {
+      "type": "integer",
+      "default": 0
+    },
+    "reach": {
+      "type": "integer",
+      "default": 0
+    },
+    "engagement_rate": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "notes": {
+      "type": "text",
+      "description": "Additional notes about metrics"
+    }
+  }
+}

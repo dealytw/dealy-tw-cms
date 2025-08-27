@@ -13,5 +13,24 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/merchants/admin',
+      handler: 'merchant.getAdminMerchants',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    // Add the missing admin endpoint that Coupon Editor expects
+    {
+      method: 'GET',
+      path: '/api/merchants/admin',
+      handler: 'merchant.getAdminMerchants',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };

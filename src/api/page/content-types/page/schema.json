@@ -1,0 +1,146 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": {
+    "singularName": "page",
+    "pluralName": "pages",
+    "displayName": "Page",
+    "description": "Static pages like About Us, Contact, Terms, Privacy Policy, etc."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "page_type": {
+      "type": "enumeration",
+      "enum": [
+        "about",
+        "contact",
+        "terms",
+        "privacy",
+        "careers",
+        "legal",
+        "help",
+        "faq",
+        "custom"
+      ],
+      "default": "custom",
+      "required": true
+    },
+    "content": {
+      "type": "blocks",
+      "required": true
+    },
+    "summary": {
+      "type": "text",
+      "description": "Brief summary for page previews"
+    },
+    "featured_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK",
+        "JP",
+        "KR",
+        "MY",
+        "SG",
+        "THAI",
+        "VIET",
+        "INDONESIA",
+        "global"
+      ],
+      "default": "global",
+      "description": "Which market this page is for (global = all markets)"
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": [
+        "zh-TW",
+        "zh-HK",
+        "en",
+        "ja",
+        "ko",
+        "ms",
+        "th",
+        "vi",
+        "id"
+      ],
+      "default": "en",
+      "description": "Primary language of the page content"
+    },
+    "seo_title": {
+      "type": "string",
+      "description": "Custom SEO title (optional)"
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Custom SEO description (optional)"
+    },
+    "meta_keywords": {
+      "type": "text",
+      "description": "Meta keywords for SEO"
+    },
+    "canonical_url": {
+      "type": "string",
+      "description": "Custom canonical URL if different from default"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mark as featured page"
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Order for displaying pages in navigation"
+    },
+    "show_in_navigation": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show this page in main navigation"
+    },
+    "show_in_footer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show this page in footer navigation"
+    },
+    "contact_info": {
+      "type": "component",
+      "component": "page.contact-info",
+      "repeatable": false,
+      "description": "Contact information (for contact pages)"
+    },
+    "social_links": {
+      "type": "component",
+      "component": "page.social-links",
+      "repeatable": true,
+      "description": "Social media links (for about/contact pages)"
+    },
+    "team_members": {
+      "type": "component",
+      "component": "page.team-member",
+      "repeatable": true,
+      "description": "Team member information (for about pages)"
+    },
+    "faq_items": {
+      "type": "component",
+      "component": "page.faq-item",
+      "repeatable": true,
+      "description": "FAQ items (for FAQ pages)"
+    }
+  }
+}

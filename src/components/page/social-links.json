@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_page_social_links",
+  "info": {
+    "displayName": "Social Links",
+    "description": "Social media links for pages"
+  },
+  "options": {},
+  "attributes": {
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "facebook",
+        "twitter",
+        "instagram",
+        "linkedin",
+        "youtube",
+        "tiktok",
+        "line",
+        "wechat",
+        "telegram",
+        "discord",
+        "other"
+      ],
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Custom display name for the platform"
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

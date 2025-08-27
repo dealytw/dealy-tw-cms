@@ -83,8 +83,13 @@ const CouponEditor: React.FC = () => {
 
   // Load real data from Strapi API
   useEffect(() => {
-    loadCoupons();
-    loadMerchants();
+    // Add a small delay to ensure Strapi is fully loaded
+    const timer = setTimeout(() => {
+      loadCoupons();
+      loadMerchants();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const loadCoupons = async () => {
@@ -150,7 +155,8 @@ const CouponEditor: React.FC = () => {
 
   const loadMerchants = async () => {
     try {
-      const response = await fetch('/api/merchants/admin', {
+      // Get merchants from the coupon endpoint since it already has merchant data
+      const couponResponse = await fetch('/api/coupons/admin', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -159,18 +165,36 @@ const CouponEditor: React.FC = () => {
         credentials: 'same-origin'
       });
       
-      console.log('Merchant response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setMerchants(data.results || []);
+      if (couponResponse.ok) {
+        const couponData = await couponResponse.json();
+        // Extract unique merchants from coupons
+        const merchantMap = new Map();
+        if (couponData.results) {
+          couponData.results.forEach((coupon: any) => {
+            if (coupon.merchant && coupon.merchant.id) {
+              merchantMap.set(coupon.merchant.id, {
+                id: coupon.merchant.id,
+                merchant_name: coupon.merchant.merchant_name,
+                slug: coupon.merchant.slug
+              });
+            }
+          });
+        }
+        
+        const merchants = Array.from(merchantMap.values());
+        setMerchants(merchants);
+        console.log('Loaded merchants from coupons:', merchants.length);
+        
+        if (merchants.length === 0) {
+          console.warn('No merchants found in coupons - you may need to create merchants first');
+        }
       } else {
-        console.error('Failed to load merchants:', response.status, response.statusText);
-        const text = await response.text();
-        console.error('Merchant response text:', text.substring(0, 200));
+        console.error('Failed to load coupons for merchant data:', couponResponse.status);
+        setMerchants([]);
       }
     } catch (error: any) {
-      console.error('Error loading merchants:', error);
+      console.error('Error loading merchants from coupons:', error);
+      setMerchants([]);
     }
   };
 
@@ -196,17 +220,20 @@ const CouponEditor: React.FC = () => {
       setSaving(true);
       const updatePromises = Object.entries(editingData).map(async ([couponId, changes]) => {
         const id = parseInt(couponId);
-        const response = await fetch(`/admin/content-manager/collection-types/api::coupon.coupon/${id}`, {
+        
+        // Use the correct API endpoint for updating coupons
+        const response = await fetch(`/api/coupons/admin/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(changes),
+          body: JSON.stringify({ data: changes }),
           credentials: 'same-origin'
         });
         
         if (!response.ok) {
-          throw new Error(`Failed to update coupon ${id}: ${response.statusText}`);
+          const errorText = await response.text();
+          throw new Error(`Failed to update coupon ${id}: ${response.statusText} - ${errorText}`);
         }
         
         return response.json();
@@ -218,7 +245,7 @@ const CouponEditor: React.FC = () => {
       await loadCoupons();
       setEditingData({});
       alert('All changes saved successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving changes:', error);
       alert(`Error saving changes: ${error.message}`);
     } finally {
@@ -262,26 +289,24 @@ const CouponEditor: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          data: {
-            coupon_title: newCoupon.coupon_title,
-            value: newCoupon.value || '',
-            code: newCoupon.code || '',
-            coupon_type: newCoupon.coupon_type || 'coupon',
-            affiliate_link: newCoupon.affiliate_link || '',
-            description: newCoupon.description || '',
-            editor_tips: newCoupon.editor_tips || '',
-            priority: newCoupon.priority || 0,
-                      starts_at: newCoupon.starts_at || null,
+        body: JSON.stringify({ data: {
+          coupon_title: newCoupon.coupon_title,
+          value: newCoupon.value || '',
+          code: newCoupon.code || '',
+          coupon_type: newCoupon.coupon_type || 'coupon',
+          affiliate_link: newCoupon.affiliate_link || '',
+          description: newCoupon.description || '',
+          editor_tips: newCoupon.editor_tips || '',
+          priority: newCoupon.priority || 0,
+          starts_at: newCoupon.starts_at || null,
           expires_at: newCoupon.expires_at || null,
-            coupon_status: 'active',
-            user_count: 0,
-            display_count: 0,
-            site: newCoupon.site || '',
-            merchant: newCoupon.merchant?.id,
-            market: newCoupon.market || 'TW'
-          }
-        }),
+          coupon_status: 'active',
+          user_count: 0,
+          display_count: 0,
+          site: newCoupon.site || '',
+          merchant: newCoupon.merchant?.id,
+          market: newCoupon.market || 'TW'
+        } }),
         credentials: 'same-origin'
       });
 
@@ -519,7 +544,22 @@ const CouponEditor: React.FC = () => {
   // Filter coupons based on current filters
   const filteredCoupons = coupons.filter(coupon => {
     if (filters.market && coupon.market !== filters.market) return false;
-            if (filters.merchant && coupon.merchant?.merchant_name?.toLowerCase().includes(filters.merchant.toLowerCase())) return false;
+    
+    // Fix merchant filter - search through merchant name properly
+    if (filters.merchant && filters.merchant.trim() !== '') {
+      const merchantName = coupon.merchant?.merchant_name || '';
+      const matches = merchantName.toLowerCase().includes(filters.merchant.toLowerCase());
+      
+      // Debug logging
+      if (filters.merchant.toLowerCase() === 'adidas') {
+        console.log(`Coupon ${coupon.id}: merchant="${merchantName}", matches="${filters.merchant}" = ${matches}`);
+      }
+      
+      if (!matches) {
+        return false;
+      }
+    }
+    
     if (filters.status && coupon.coupon_status !== filters.status) return false;
     if (filters.type && coupon.coupon_type !== filters.type) return false;
     return true;
@@ -807,6 +847,11 @@ const CouponEditor: React.FC = () => {
         <span style={{ color: '#aaa' }}>|</span>
         <span style={{ color: '#aaa', fontSize: '14px' }}>
           Showing {filteredCoupons.length} of {coupons.length} coupons
+          {filters.merchant && (
+            <span style={{ color: '#ff6b6b' }}>
+              {' '}(Filtered by merchant: "{filters.merchant}")
+            </span>
+          )}
         </span>
       </div>
 
@@ -819,6 +864,31 @@ const CouponEditor: React.FC = () => {
           marginBottom: '20px' 
         }}>
           <h3 style={{ color: 'white', marginBottom: '15px' }}>Add New Coupon</h3>
+          
+          {/* Show warning if no merchants available */}
+          {merchants.length === 0 && (
+            <div style={{ 
+              background: '#dc3545', 
+              color: 'white', 
+              padding: '15px', 
+              borderRadius: '4px', 
+              marginBottom: '15px' 
+            }}>
+              <h4 style={{ margin: '0 0 10px 0' }}>⚠️ No Merchants Available</h4>
+              <p style={{ margin: '0 0 10px 0' }}>
+                You need to create merchants before you can create coupons. Here's how:
+              </p>
+              <ol style={{ margin: '0', paddingLeft: '20px' }}>
+                <li>Go to <strong>Content Manager</strong> in the left sidebar</li>
+                <li>Click on <strong>Merchant</strong> collection type</li>
+                <li>Click <strong>Create new entry</strong></li>
+                <li>Fill in the merchant details (name, description, etc.)</li>
+                <li>Click <strong>Save</strong></li>
+                <li>Come back here and refresh the data</li>
+              </ol>
+            </div>
+          )}
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '15px' }}>
             <div>
               <label style={{ color: 'white', display: 'block', marginBottom: '4px' }}>Title *</label>
@@ -843,14 +913,22 @@ const CouponEditor: React.FC = () => {
                   } : null });
                 }}
                 style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+                disabled={merchants.length === 0}
               >
-                <option value="">Select Merchant...</option>
+                <option value="">
+                  {merchants.length === 0 ? 'No merchants available' : 'Select Merchant...'}
+                </option>
                 {merchants.map(merchant => (
                   <option key={merchant.id} value={merchant.id}>
                     {merchant.merchant_name}
                   </option>
                 ))}
               </select>
+              {merchants.length === 0 && (
+                <small style={{ color: '#ff6b6b', fontSize: '12px' }}>
+                  Create merchants first in Content Manager
+                </small>
+              )}
             </div>
             <div>
               <label style={{ color: 'white', display: 'block', marginBottom: '4px' }}>Market</label>

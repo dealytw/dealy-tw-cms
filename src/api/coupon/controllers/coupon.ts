@@ -8,12 +8,30 @@ export default factories.createCoreController('api::coupon.coupon', ({ strapi })
   async getAdminCoupons(ctx) {
     try {
       const coupons = await strapi.entityService.findMany('api::coupon.coupon', {
-        populate: ['merchant'],
+        populate: {
+          merchant: {
+            fields: ['id', 'merchant_name', 'slug']
+          }
+        },
         sort: { priority: 'desc', createdAt: 'desc' },
         limit: 1000
       });
       
-      ctx.body = { results: coupons };
+      // Format the data to match what the Coupon Editor expects
+      const formattedCoupons = coupons.map((coupon: any) => {
+        const couponData = coupon as any;
+        return {
+          ...couponData,
+          // Ensure merchant data is properly structured
+          merchant: couponData.merchant ? {
+            id: couponData.merchant.id,
+            merchant_name: couponData.merchant.merchant_name,
+            slug: couponData.merchant.slug
+          } : null
+        };
+      });
+      
+      ctx.body = { results: formattedCoupons };
     } catch (error) {
       ctx.throw(500, error);
     }

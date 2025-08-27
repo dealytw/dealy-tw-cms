@@ -555,6 +555,84 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPagePage extends Struct.CollectionTypeSchema {
+  collectionName: 'pages';
+  info: {
+    description: 'Static pages like About Us, Contact, Terms, Privacy Policy, etc.';
+    displayName: 'Page';
+    pluralName: 'pages';
+    singularName: 'page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    canonical_url: Schema.Attribute.String;
+    contact_info: Schema.Attribute.Component<'page.contact-info', false>;
+    content: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    faq_items: Schema.Attribute.Component<'page.faq-item', true>;
+    featured_image: Schema.Attribute.Media<'images'>;
+    is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    language: Schema.Attribute.Enumeration<
+      ['zh-TW', 'zh-HK', 'en', 'ja', 'ko', 'ms', 'th', 'vi', 'id']
+    > &
+      Schema.Attribute.DefaultTo<'en'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'> &
+      Schema.Attribute.Private;
+    market: Schema.Attribute.Enumeration<
+      [
+        'TW',
+        'HK',
+        'JP',
+        'KR',
+        'MY',
+        'SG',
+        'THAI',
+        'VIET',
+        'INDONESIA',
+        'global',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'global'>;
+    meta_keywords: Schema.Attribute.Text;
+    page_type: Schema.Attribute.Enumeration<
+      [
+        'about',
+        'contact',
+        'terms',
+        'privacy',
+        'careers',
+        'legal',
+        'help',
+        'faq',
+        'custom',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'custom'>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo_description: Schema.Attribute.Text;
+    seo_title: Schema.Attribute.String;
+    show_in_footer: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    show_in_navigation: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    social_links: Schema.Attribute.Component<'page.social-links', true>;
+    sort_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    summary: Schema.Attribute.Text;
+    team_members: Schema.Attribute.Component<'page.team-member', true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiRatingRating extends Struct.CollectionTypeSchema {
   collectionName: 'ratings';
   info: {
@@ -590,6 +668,140 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     user_agent: Schema.Attribute.Text;
     user_ip: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ApiSearchSearch extends Struct.CollectionTypeSchema {
+  collectionName: 'searches';
+  info: {
+    description: 'Search functionality for merchants, coupons, categories, and topics';
+    displayName: 'Search';
+    pluralName: 'searches';
+    singularName: 'search';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    category_filter: Schema.Attribute.String;
+    coupon_type_filter: Schema.Attribute.Enumeration<
+      ['discount', 'free_shipping', 'deal']
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::search.search'
+    > &
+      Schema.Attribute.Private;
+    market: Schema.Attribute.Enumeration<
+      ['TW', 'HK', 'JP', 'KR', 'MY', 'SG', 'THAI', 'VIET', 'INDONESIA']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    query: Schema.Attribute.String & Schema.Attribute.Required;
+    results_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    search_date: Schema.Attribute.DateTime & Schema.Attribute.DefaultTo<'now'>;
+    search_type: Schema.Attribute.Enumeration<
+      ['merchant', 'coupon', 'category', 'topic', 'all']
+    > &
+      Schema.Attribute.DefaultTo<'all'>;
+    session_id: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_agent: Schema.Attribute.Text;
+    user_ip: Schema.Attribute.String;
+  };
+}
+
+export interface ApiSocialSocialAccount extends Struct.CollectionTypeSchema {
+  collectionName: 'social_accounts';
+  info: {
+    description: 'Social media accounts for the organization';
+    displayName: 'Social Account';
+    pluralName: 'social-accounts';
+    singularName: 'social-account';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    account_id: Schema.Attribute.String;
+    account_name: Schema.Attribute.String & Schema.Attribute.Required;
+    account_url: Schema.Attribute.String & Schema.Attribute.Required;
+    api_credentials: Schema.Attribute.Component<
+      'social.api-credentials',
+      false
+    >;
+    content_guidelines: Schema.Attribute.Text;
+    cover_image: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    display_name: Schema.Attribute.String;
+    engagement_metrics: Schema.Attribute.Component<
+      'social.engagement-metrics',
+      false
+    >;
+    follower_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    is_verified: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    language: Schema.Attribute.Enumeration<
+      ['zh-TW', 'zh-HK', 'en', 'ja', 'ko', 'ms', 'th', 'vi', 'id']
+    > &
+      Schema.Attribute.DefaultTo<'en'>;
+    last_post_date: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::social.social-account'
+    > &
+      Schema.Attribute.Private;
+    market: Schema.Attribute.Enumeration<
+      [
+        'TW',
+        'HK',
+        'JP',
+        'KR',
+        'MY',
+        'SG',
+        'THAI',
+        'VIET',
+        'INDONESIA',
+        'global',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'global'>;
+    next_post_date: Schema.Attribute.DateTime;
+    platform: Schema.Attribute.Enumeration<
+      [
+        'facebook',
+        'twitter',
+        'instagram',
+        'linkedin',
+        'youtube',
+        'tiktok',
+        'line',
+        'wechat',
+        'telegram',
+        'discord',
+        'other',
+      ]
+    > &
+      Schema.Attribute.Required;
+    posting_schedule: Schema.Attribute.Component<
+      'social.posting-schedule',
+      true
+    >;
+    profile_image: Schema.Attribute.Media<'images'>;
+    publishedAt: Schema.Attribute.DateTime;
+    sort_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1140,7 +1352,10 @@ declare module '@strapi/strapi' {
       'api::coupon.coupon': ApiCouponCoupon;
       'api::merchant-category.merchant-category': ApiMerchantCategoryMerchantCategory;
       'api::merchant.merchant': ApiMerchantMerchant;
+      'api::page.page': ApiPagePage;
       'api::rating.rating': ApiRatingRating;
+      'api::search.search': ApiSearchSearch;
+      'api::social.social-account': ApiSocialSocialAccount;
       'api::topic.topic': ApiTopicTopic;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

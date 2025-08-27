@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_social_posting_schedules",
+  "info": {
+    "displayName": "Posting Schedule",
+    "description": "Optimal posting times for social media platforms"
+  },
+  "options": {},
+  "attributes": {
+    "day_of_week": {
+      "type": "enumeration",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "required": true
+    },
+    "time_slots": {
+      "type": "component",
+      "component": "social.time-slot",
+      "repeatable": true,
+      "description": "Optimal posting times for this day"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

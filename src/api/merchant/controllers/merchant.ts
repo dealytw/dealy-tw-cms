@@ -104,13 +104,11 @@ export default factories.createCoreController('api::merchant.merchant', ({ strap
         return ctx.notFound('Merchant not found');
       }
 
-      const merchantData = merchant as any; // Type assertion for populated fields
-      const merchantUrl = merchantData.site_url || merchantData.canonical_url || `https://dealy.tw/merchant/${merchantData.slug}`;
+      const merchantData = merchant as any;
+      const merchantUrl = `${process.env.SITE_URL || 'https://dealy.tw'}/merchant/${merchantData.slug}`;
+      const isAutoSeoEnabled = merchantData.page_setup?.auto_seo_enabled !== false;
 
-      // Check if auto SEO is enabled globally
-      const isAutoSeoEnabled = merchantData.auto_seo_enabled !== false;
-
-      // Build the schema graph
+      // Base schema
       const schema: any = {
         "@context": "https://schema.org",
         "@graph": []
@@ -119,50 +117,44 @@ export default factories.createCoreController('api::merchant.merchant', ({ strap
       // Organization
       const organizationSchema: any = {
         "@type": "Organization",
-        "@id": `${merchantUrl}#organization`,
+        "@id": `${process.env.SITE_URL || 'https://dealy.tw'}#organization`,
+        "name": "Dealy.tw",
+        "url": process.env.SITE_URL || 'https://dealy.tw',
+        "logo": {
+          "@type": "ImageObject",
+          "url": merchantData.logo?.url || `${process.env.SITE_URL || 'https://dealy.tw'}/logo.png`
+        }
+      };
+
+      schema["@graph"].push(organizationSchema);
+
+      // Merchant
+      const merchantSchema: any = {
+        "@type": "Organization",
+        "@id": `${merchantUrl}#merchant`,
         "name": merchantData.merchant_name,
         "url": merchantUrl,
-        "inLanguage": "zh-HK"
+        "description": merchantData.summary || merchantData.store_description,
+        "parentOrganization": { "@id": `${process.env.SITE_URL || 'https://dealy.tw'}#organization` }
       };
 
       if (merchantData.logo?.url) {
-        organizationSchema.logo = {
+        merchantSchema.logo = {
           "@type": "ImageObject",
           "url": merchantData.logo.url
         };
       }
 
-      if (merchantData.summary) {
-        organizationSchema.description = merchantData.summary;
-      }
+      schema["@graph"].push(merchantSchema);
 
-      schema["@graph"].push(organizationSchema);
-
-      // Store
-      const storeSchema: any = {
-        "@type": "Store",
-        "@id": `${merchantUrl}#store`,
-        "name": merchantData.merchant_name,
-        "url": merchantUrl,
-        "inLanguage": "zh-HK",
-        "parentOrganization": { "@id": `${merchantUrl}#organization` }
-      };
-
-      if (merchantData.store_description) {
-        storeSchema.description = merchantData.store_description;
-      }
-
-      schema["@graph"].push(storeSchema);
-
-      // ItemList for coupons
+      // Add coupons if available
       if (merchantData.coupons && merchantData.coupons.length > 0) {
         const itemListSchema: any = {
           "@type": "ItemList",
           "@id": `${merchantUrl}#coupons`,
           "name": `${merchantData.merchant_name} Coupons`,
-          "description": `Available coupons and deals from ${merchantData.merchant_name}`,
-          "url": merchantUrl,
-          "inLanguage": "zh-HK",
+          "description": `Best deals and coupons from ${merchantData.merchant_name}`,
+          "numberOfItems": merchantData.coupons.length,
           "itemListElement": merchantData.coupons.map((coupon: any, index: number) => ({
             "@type": "ListItem",
             "position": index + 1,
@@ -246,6 +238,26 @@ export default factories.createCoreController('api::merchant.merchant', ({ strap
     } catch (error) {
       console.error('Error generating SEO schema:', error);
       return ctx.internalServerError('Error generating SEO schema');
+    }
+  },
+
+  // Get merchants for admin panel (simplified data)
+  async getAdminMerchants(ctx) {
+    try {
+      const merchants = await strapi.entityService.findMany('api::merchant.merchant', {
+        fields: ['id', 'merchant_name', 'slug'],
+        sort: { merchant_name: 'asc' }
+      });
+      
+      // Return the structure that Coupon Editor expects
+      return {
+        success: true,
+        data: merchants,
+        results: merchants // Add this for compatibility
+      };
+    } catch (error) {
+      strapi.log.error('Error fetching admin merchants:', error);
+      return ctx.internalServerError('Failed to fetch merchants');
     }
   }
 }));

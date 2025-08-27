@@ -1,0 +1,144 @@
+{
+  "kind": "collectionType",
+  "collectionName": "social_accounts",
+  "info": {
+    "singularName": "social-account",
+    "pluralName": "social-accounts",
+    "displayName": "Social Account",
+    "description": "Social media accounts for the organization"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "facebook",
+        "twitter",
+        "instagram",
+        "linkedin",
+        "youtube",
+        "tiktok",
+        "line",
+        "wechat",
+        "telegram",
+        "discord",
+        "other"
+      ],
+      "required": true
+    },
+    "account_name": {
+      "type": "string",
+      "required": true
+    },
+    "account_url": {
+      "type": "string",
+      "required": true
+    },
+    "account_id": {
+      "type": "string",
+      "description": "Platform-specific account ID"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Custom display name"
+    },
+    "description": {
+      "type": "text",
+      "description": "Account description or bio"
+    },
+    "profile_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "cover_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "follower_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of followers (can be updated manually)"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the account is verified"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the account is active"
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK",
+        "JP",
+        "KR",
+        "MY",
+        "SG",
+        "THAI",
+        "VIET",
+        "INDONESIA",
+        "global"
+      ],
+      "default": "global",
+      "description": "Which market this account is for"
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": [
+        "zh-TW",
+        "zh-HK",
+        "en",
+        "ja",
+        "ko",
+        "ms",
+        "th",
+        "vi",
+        "id"
+      ],
+      "default": "en"
+    },
+    "api_credentials": {
+      "type": "component",
+      "component": "social.api-credentials",
+      "repeatable": false,
+      "description": "API credentials for automated posting (encrypted)"
+    },
+    "posting_schedule": {
+      "type": "component",
+      "component": "social.posting-schedule",
+      "repeatable": true,
+      "description": "Optimal posting times for this platform"
+    },
+    "content_guidelines": {
+      "type": "text",
+      "description": "Content guidelines for this platform"
+    },
+    "engagement_metrics": {
+      "type": "component",
+      "component": "social.engagement-metrics",
+      "repeatable": false,
+      "description": "Recent engagement metrics"
+    },
+    "last_post_date": {
+      "type": "datetime",
+      "description": "Date of last post"
+    },
+    "next_post_date": {
+      "type": "datetime",
+      "description": "Scheduled next post date"
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Order for displaying accounts"
+    }
+  }
+}
