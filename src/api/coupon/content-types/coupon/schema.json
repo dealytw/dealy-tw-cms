@@ -88,6 +88,10 @@
       "type": "integer",
       "default": 0
     },
+    "clicks_real": {
+      "type": "integer",
+      "default": 0
+    },
     "site": {
       "type": "string"
     }
