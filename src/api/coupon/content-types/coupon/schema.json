@@ -13,8 +13,12 @@
   "attributes": {
     "coupon_uid": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "coupon_title"
     },
     "merchant": {
       "type": "relation",
@@ -33,67 +37,122 @@
       "type": "string",
       "required": true
     },
-    "value": {
+    "coupon_code": {
       "type": "string"
     },
-    "code": {
+    "coupon_link": {
       "type": "string"
     },
     "coupon_type": {
       "type": "enumeration",
       "enum": [
-        "promo_code",
-        "coupon",
-        "discount"
+        "discount",
+        "free_shipping",
+        "deal"
       ]
     },
-    "affiliate_link": {
-      "type": "string",
-      "required": true,
-      "unique": false
+    "coupon_discount": {
+      "type": "string"
     },
-    "description": {
-      "type": "blocks"
+    "coupon_expiry": {
+      "type": "date"
     },
-    "editor_tips": {
-      "type": "blocks"
+    "coupon_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "coupon_description": {
+      "type": "text"
+    },
+    "coupon_terms": {
+      "type": "richtext"
+    },
+    "page_title": {
+      "type": "string"
+    },
+    "page_description": {
+      "type": "text"
+    },
+    "rating_stats": {
+      "type": "component",
+      "repeatable": false,
+      "component": "rating.rating-stats"
+    },
+    "approval_status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "draft",
+      "required": true
+    },
+    "reviewer_notes": {
+      "type": "text"
+    },
+    "scheduled_publish_date": {
+      "type": "datetime"
+    },
+    "ai_generated": {
+      "type": "boolean",
+      "default": false
+    },
+    "ai_source": {
+      "type": "string"
     },
     "priority": {
       "type": "integer",
       "default": 0
     },
-    "starts_at": {
-      "type": "date"
-    },
-    "expires_at": {
-      "type": "date"
-    },
-    "coupon_status": {
-      "type": "enumeration",
-      "default": "active",
-      "enum": [
-        "active",
-        "expired",
-        "scheduled",
-        "archived"
-      ]
-    },
-    "user_count": {
-      "type": "integer"
-    },
-    "last_click_at": {
-      "type": "datetime"
-    },
     "display_count": {
       "type": "integer",
       "default": 0
     },
-    "clicks_real": {
+    "user_count": {
       "type": "integer",
       "default": 0
     },
-    "site": {
+    "last_click_at": {
+      "type": "datetime"
+    },
+    "coupon_status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "expired",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "expiration_date": {
+      "type": "date"
+    },
+    "affiliate_link": {
       "type": "string"
+    },
+    "affiliate_id": {
+      "type": "string"
+    },
+    "commission_rate": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "tracking_code": {
+      "type": "string"
+    },
+    "conversion_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "revenue_generated": {
+      "type": "decimal",
+      "min": 0
     }
   }
 }

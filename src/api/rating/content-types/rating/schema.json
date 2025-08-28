@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ratings",
+  "info": {
+    "singularName": "rating",
+    "pluralName": "ratings",
+    "displayName": "Coupon Rating",
+    "description": "User ratings for coupons (thumbs up/down feedback)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "coupon_id": {
+      "type": "string",
+      "required": true
+    },
+    "merchant_id": {
+      "type": "string",
+      "required": true
+    },
+    "rating_type": {
+      "type": "enumeration",
+      "enum": ["thumbs_up", "thumbs_down"],
+      "required": true
+    },
+    "user_ip": {
+      "type": "string",
+      "required": true
+    },
+    "user_agent": {
+      "type": "text"
+    },
+    "feedback_comment": {
+      "type": "text"
+    },
+    "coupon_uid": {
+      "type": "string"
+    },
+    "placement": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    }
+  }
+}
