@@ -9,6 +9,7 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {},
   "attributes": {
     "merchant_name": {
       "type": "string"
@@ -20,12 +21,14 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "site_url": {
-      "type": "string"
-    },
-    "canonical_url": {
       "type": "string"
     },
     "summary": {
@@ -34,62 +37,29 @@
     "store_description": {
       "type": "blocks"
     },
-    "page_title": {
-      "type": "string",
-      "description": "Page title for both page types"
+    "default_affiliate_link": {
+      "type": "string"
     },
-    "page_description": {
-      "type": "text",
-      "description": "Page description for both page types"
-    },
-    "short_intro": {
-      "type": "text",
-      "description": "Short introduction for coupon page"
-    },
-    "how_to_use": {
-      "type": "blocks",
-      "description": "How to use the coupon"
-    },
-    "blog_intro": {
-      "type": "text",
-      "description": "Introduction for blog page"
-    },
-    "full_blog_content": {
-      "type": "blocks",
-      "description": "Full blog content"
-    },
-    "faq": {
-      "type": "component",
-      "component": "merchant.faq",
-      "repeatable": true
-    },
-    "auto_seo_enabled": {
+    "is_featured": {
       "type": "boolean",
-      "default": true,
-      "description": "Enable automatic SEO generation for this merchant"
-    },
-    "page_approach": {
-      "type": "enumeration",
-      "enum": [
-        "coupon_page",
-        "blog_page",
-        "both"
-      ],
-      "default": "both",
-      "required": true,
-      "description": "Choose the page layout type for this merchant"
+      "default": false
     },
     "seo_title": {
-      "type": "string",
-      "description": "Manual SEO title when auto_seo_enabled is false"
+      "type": "string"
     },
     "seo_description": {
-      "type": "text",
-      "description": "Manual SEO description when auto_seo_enabled is false"
+      "type": "text"
     },
-    "meta_keywords": {
-      "type": "text",
-      "description": "Meta keywords for manual SEO"
+    "canonical_url": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0
+    },
+    "robots": {
+      "type": "string",
+      "default": "index,follow"
     },
     "coupons": {
       "type": "relation",
@@ -97,11 +67,12 @@
       "target": "api::coupon.coupon",
       "mappedBy": "merchant"
     },
-    "categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::merchant-category.merchant-category",
-      "inversedBy": "merchants"
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "TW",
+        "HK"
+      ]
     }
   }
 }
