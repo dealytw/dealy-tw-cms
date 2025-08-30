@@ -3,7 +3,7 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['http://localhost:8080','https://studio.dealy.tw'], // Updated for your local port
+      origin: ['http://localhost:8080','https://cms.dealy.tw'], // Updated for your local port
       methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
       headers: '*',
       credentials: true,
