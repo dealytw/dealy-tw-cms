@@ -1,33 +1,17 @@
-// import type { Core } from '@strapi/strapi';
-
 export default {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
-
-  /**
-   * An asynchronous bootstrap function that runs before
-   * your application gets started.
-   *
-   * This gives you an opportunity to set up your data model,
-   * run jobs, or perform some special logic.
-   */
-  bootstrap({ strapi }) {
-    if (process.env.AUTO_RESTORE_CONFIG === 'true') {
-      strapi
-        .plugin('config-sync')
-        .service('core')
-        .restore()
-        .then(() => {
-          strapi.log.info('✅ Config restored from ./config/sync');
-        })
-        .catch((err) => {
-          strapi.log.error('❌ Config restore failed:', err);
-        });
+  register() {},
+  async bootstrap({ strapi }) {
+    if (process.env.AUTO_RESTORE_CONFIG !== 'true') return;
+    const plugin = strapi.plugin?.('config-sync');
+    if (!plugin) {
+      strapi.log.warn('config-sync plugin not found; skipping auto-restore.');
+      return;
+    }
+    try {
+      await plugin.service('core').restore();
+      strapi.log.info('✅ Config restored from ./config/sync');
+    } catch (err) {
+      strapi.log.error('❌ Config restore failed:', err);
     }
   },
 };
