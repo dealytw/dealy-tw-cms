@@ -16,5 +16,18 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+  bootstrap({ strapi }) {
+    if (process.env.AUTO_RESTORE_CONFIG === 'true') {
+      strapi
+        .plugin('config-sync')
+        .service('core')
+        .restore()
+        .then(() => {
+          strapi.log.info('✅ Config restored from ./config/sync');
+        })
+        .catch((err) => {
+          strapi.log.error('❌ Config restore failed:', err);
+        });
+    }
+  },
 };
