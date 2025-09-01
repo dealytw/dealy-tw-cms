@@ -1,0 +1,87 @@
+{
+  "uid": "api::coupon.coupon",
+  "settings": {
+    "displayName": "Coupon",
+    "singularName": "coupon",
+    "pluralName": "coupons",
+    "description": "",
+    "kind": "collectionType"
+  },
+  "layouts": {
+    "list": [
+      "coupon_title",
+      "merchant",
+      "affiliate_link",
+      "coupon_type",
+      "priority",
+      "coupon_uid",
+      "market",
+      "coupon_status",
+      "user_count",
+      "display_count",
+      "last_click_at",
+      "value",
+      "code",
+      "description",
+      "editor_tips",
+      "starts_at",
+      "expires_at",
+      "site"
+    ],
+    "edit": [
+      [
+        { "name": "coupon_title", "size": 6 },
+        { "name": "merchant", "size": 6 }
+      ],
+      [
+        { "name": "affiliate_link", "size": 6 },
+        { "name": "coupon_type", "size": 6 }
+      ],
+      [
+        { "name": "priority", "size": 6 },
+        { "name": "coupon_uid", "size": 6 }
+      ],
+      [
+        { "name": "market", "size": 6 },
+        { "name": "coupon_status", "size": 6 }
+      ],
+      [
+        { "name": "user_count", "size": 6 },
+        { "name": "display_count", "size": 6 }
+      ],
+      [
+        { "name": "last_click_at", "size": 6 },
+        { "name": "value", "size": 6 }
+      ],
+      [{ "name": "code", "size": 12 }],
+      [{ "name": "description", "size": 12 }],
+      [{ "name": "editor_tips", "size": 12 }],
+      [
+        { "name": "starts_at", "size": 6 },
+        { "name": "expires_at", "size": 6 }
+      ],
+      [{ "name": "site", "size": 12 }]
+    ],
+    "editRelations": []
+  },
+  "metadatas": {
+    "coupon_title": { "edit": {}, "list": {} },
+    "merchant": { "edit": {}, "list": {} },
+    "affiliate_link": { "edit": {}, "list": {} },
+    "coupon_type": { "edit": {}, "list": {} },
+    "priority": { "edit": {}, "list": {} },
+    "coupon_uid": { "edit": {}, "list": {} },
+    "market": { "edit": {}, "list": {} },
+    "coupon_status": { "edit": {}, "list": {} },
+    "user_count": { "edit": {}, "list": {} },
+    "display_count": { "edit": {}, "list": {} },
+    "last_click_at": { "edit": {}, "list": {} },
+    "value": { "edit": {}, "list": {} },
+    "code": { "edit": {}, "list": {} },
+    "description": { "edit": {}, "list": {} },
+    "editor_tips": { "edit": {}, "list": {} },
+    "starts_at": { "edit": {}, "list": {} },
+    "expires_at": { "edit": {}, "list": {} },
+    "site": { "edit": {}, "list": {} }
+  }
+}
