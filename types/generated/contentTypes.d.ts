@@ -429,6 +429,7 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
 export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
   collectionName: 'merchants';
   info: {
+    displayField: 'merchant_name';
     displayName: 'Merchant';
     pluralName: 'merchants';
     singularName: 'merchant';
