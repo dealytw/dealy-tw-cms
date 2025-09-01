@@ -1,0 +1,10 @@
+[33m001921c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;33mtag: [m[1;33mv1.4[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m v1.4: Update Content Manager configuration formatting
+[33m64b921c[m[33m ([m[1;33mtag: [m[1;33mv1.3[m[33m)[m v1.3: Add Content Manager configuration for display fields
+[33m6652713[m[33m ([m[1;33mtag: [m[1;33mv1.2[m[33m)[m v1.2: Fix display field configuration for coupon and merchant schemas
+[33m6be4902[m Add admin panel override to force display fields for relations
+[33m7da88e8[m Add displayField configuration and admin app setup to show titles instead of UIDs
+[33m724b24f[m Add displayField to coupon and merchant schemas to show titles instead of UIDs
+[33m832d14b[m Update schema attributes to show title in relations
+[33m274b7b0[m Merge branch 'main' of https://github.com/dealytw/dealy-tw-cms
+[33mce331dd[m[33m ([m[1;33mtag: [m[1;33mv1.1[m[33m)[m dealy cms V1.1 - Updated configuration and admin pages
+[33m6115580[m Update middlewares.ts
