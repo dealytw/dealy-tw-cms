@@ -2,16 +2,7 @@ export default {
   register() {},
   async bootstrap({ strapi }) {
     if (process.env.AUTO_RESTORE_CONFIG !== 'true') return;
-    const plugin = strapi.plugin?.('config-sync');
-    if (!plugin) {
-      strapi.log.warn('config-sync plugin not found; skipping auto-restore.');
-      return;
-    }
-    try {
-      await plugin.service('core').restore();
-      strapi.log.info('✅ Config restored from ./config/sync');
-    } catch (err) {
-      strapi.log.error('❌ Config restore failed:', err);
-    }
+    // No plugin on v5 – skip gracefully
+    strapi.log.warn('AUTO_RESTORE_CONFIG is true, but config-sync plugin is not available on v5. Skipping.');
   },
 };
