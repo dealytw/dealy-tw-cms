@@ -4,7 +4,8 @@
   "info": {
     "singularName": "coupon",
     "pluralName": "coupons",
-    "displayName": "Coupon"
+    "displayName": "Coupon",
+    "displayField": "coupon_title"
   },
   "options": {
     "draftAndPublish": true

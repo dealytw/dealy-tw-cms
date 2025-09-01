@@ -376,6 +376,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
   collectionName: 'coupons';
   info: {
+    displayField: 'coupon_title';
     displayName: 'Coupon';
     pluralName: 'coupons';
     singularName: 'coupon';

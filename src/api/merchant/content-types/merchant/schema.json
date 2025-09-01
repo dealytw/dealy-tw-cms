@@ -4,7 +4,8 @@
   "info": {
     "singularName": "merchant",
     "pluralName": "merchants",
-    "displayName": "Merchant"
+    "displayName": "Merchant",
+    "displayField": "merchant_name"
   },
   "options": {
     "draftAndPublish": true
