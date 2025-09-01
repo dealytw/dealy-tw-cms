@@ -11,6 +11,10 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "coupon_title": {
+      "type": "string",
+      "required": true
+    },
     "coupon_uid": {
       "type": "string",
       "required": true,
@@ -28,10 +32,6 @@
         "TW",
         "HK"
       ]
-    },
-    "coupon_title": {
-      "type": "string",
-      "required": true
     },
     "value": {
       "type": "string"

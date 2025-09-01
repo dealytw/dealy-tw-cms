@@ -1,0 +1,3 @@
+warning: in the working copy of 'src/api/coupon/content-types/coupon/schema.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/api/merchant/content-types/merchant/schema.json', LF will be replaced by CRLF the next time Git touches it
+src/api/coupon/content-types/coupon/schema.json
