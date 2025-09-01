@@ -32,13 +32,6 @@ export default {
     ],
   },
   bootstrap(app: StrapiApp) {
-    // Override the default display for relations
-    app.overridePlugin('content-manager', 'components', {
-      'relation-input': {
-        displayField: 'coupon_title'
-      }
-    });
-    
-    console.log('Admin app initialized with relation display override');
+    console.log('Admin app initialized');
   },
 };
