@@ -12,6 +12,12 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "market": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::site.site",
+      "inversedBy": "coupons"
+    },
     "coupon_title": {
       "type": "string",
       "required": true
@@ -26,13 +32,6 @@
       "relation": "manyToOne",
       "target": "api::merchant.merchant",
       "inversedBy": "coupons"
-    },
-    "market": {
-      "type": "enumeration",
-      "enum": [
-        "TW",
-        "HK"
-      ]
     },
     "value": {
       "type": "string"
@@ -88,9 +87,6 @@
     "display_count": {
       "type": "integer",
       "default": 0
-    },
-    "site": {
-      "type": "string"
     }
   }
 }

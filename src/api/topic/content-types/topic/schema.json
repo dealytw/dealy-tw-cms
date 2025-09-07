@@ -11,19 +11,18 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "market": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::site.site",
+      "inversedBy": "topics"
+    },
     "title": {
       "type": "string"
     },
     "slug": {
       "type": "uid",
       "targetField": "title"
-    },
-    "market": {
-      "type": "enumeration",
-      "enum": [
-        "TW",
-        "HK"
-      ]
     },
     "intro": {
       "type": "text"

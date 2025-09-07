@@ -12,6 +12,12 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "market": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::site.site",
+      "inversedBy": "merchants"
+    },
     "merchant_name": {
       "type": "string"
     },
@@ -68,12 +74,19 @@
       "target": "api::coupon.coupon",
       "mappedBy": "merchant"
     },
-    "market": {
+    "pageLayout": {
       "type": "enumeration",
+      "default": "coupon",
       "enum": [
-        "TW",
-        "HK"
+        "coupon",
+        "blog"
       ]
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "merchants"
     }
   }
 }

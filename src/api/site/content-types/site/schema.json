@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sites",
+  "info": {
+    "singularName": "site",
+    "pluralName": "sites",
+    "displayName": "Market"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "key": {
+      "type": "uid",
+      "targetField": ""
+    },
+    "defaultLocale": {
+      "type": "enumeration",
+      "enum": [
+        "zh-Hant-HK",
+        "zh-Hant-TW"
+      ]
+    },
+    "merchants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::merchant.merchant",
+      "mappedBy": "market"
+    },
+    "home_page": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::home-page.home-page",
+      "mappedBy": "market"
+    },
+    "coupons": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::coupon.coupon",
+      "mappedBy": "market"
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::topic.topic",
+      "mappedBy": "market"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::category.category",
+      "mappedBy": "market"
+    }
+  }
+}

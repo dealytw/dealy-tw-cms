@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_homepage_home_category_sections",
+  "info": {
+    "displayName": "home.category-section"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::topic.topic"
+    }
+  },
+  "config": {}
+}

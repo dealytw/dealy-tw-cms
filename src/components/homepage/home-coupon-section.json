@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_homepage_home_coupon_sections",
+  "info": {
+    "displayName": "home.coupon-section"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "merchants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::merchant.merchant"
+    }
+  },
+  "config": {}
+}

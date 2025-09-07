@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_homepage_home_heroes",
+  "info": {
+    "displayName": "home.hero"
+  },
+  "options": {},
+  "attributes": {
+    "background": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "showSearch": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

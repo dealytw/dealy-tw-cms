@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_homepage_home_shop_and_cat_refs",
+  "info": {
+    "displayName": "home.shop&cat-ref"
+  },
+  "options": {},
+  "attributes": {
+    "merchants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::merchant.merchant"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::category.category"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "home_pages",
+  "info": {
+    "singularName": "home-page",
+    "pluralName": "home-pages",
+    "displayName": "HomePage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "market": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::site.site",
+      "inversedBy": "home_page"
+    },
+    "title": {
+      "type": "string"
+    },
+    "hero": {
+      "type": "component",
+      "component": "homepage.home-hero",
+      "repeatable": false
+    },
+    "popularstore": {
+      "type": "component",
+      "component": "homepage.home-store-section",
+      "repeatable": false
+    },
+    "topicpage": {
+      "type": "component",
+      "component": "homepage.home-category-section",
+      "repeatable": false
+    },
+    "category": {
+      "type": "component",
+      "component": "homepage.home-shop-and-cat-ref",
+      "repeatable": false
+    },
+    "coupon": {
+      "type": "component",
+      "component": "homepage.home-coupon-section",
+      "repeatable": false
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}
