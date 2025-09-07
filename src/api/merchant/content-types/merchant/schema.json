@@ -18,6 +18,9 @@
       "target": "api::site.site",
       "inversedBy": "merchants"
     },
+    "page_title_h1": {
+      "type": "string"
+    },
     "merchant_name": {
       "type": "string"
     },
@@ -87,6 +90,9 @@
       "relation": "manyToOne",
       "target": "api::category.category",
       "inversedBy": "merchants"
+    },
+    "active_coupon_title_h2": {
+      "type": "string"
     }
   }
 }

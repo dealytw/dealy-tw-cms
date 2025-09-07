@@ -513,6 +513,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    active_coupon_title_h2: Schema.Attribute.String;
     canonical_url: Schema.Attribute.String;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     coupons: Schema.Attribute.Relation<'oneToMany', 'api::coupon.coupon'>;
@@ -530,6 +531,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     market: Schema.Attribute.Relation<'manyToOne', 'api::site.site'>;
     merchant_name: Schema.Attribute.String;
+    page_title_h1: Schema.Attribute.String;
     pageLayout: Schema.Attribute.Enumeration<['coupon', 'blog']> &
       Schema.Attribute.DefaultTo<'coupon'>;
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
