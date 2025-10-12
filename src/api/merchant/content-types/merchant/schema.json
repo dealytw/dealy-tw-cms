@@ -94,26 +94,26 @@
     "active_coupon_title_h2": {
       "type": "string"
     },
-    "related_merchants": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::merchant.merchant"
-    },
     "how_to": {
       "type": "blocks"
     },
-    "Useful_Links": {
+    "useful_links": {
       "type": "component",
       "component": "merchant.merchant-useful-links",
       "repeatable": true
     },
-    "FAQs": {
+    "faqs": {
       "type": "component",
       "component": "merchant.merchant-faqs",
       "repeatable": true
     },
     "small_blog_section": {
       "type": "blocks"
+    },
+    "related_merchants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::merchant.merchant"
     }
   }
 }

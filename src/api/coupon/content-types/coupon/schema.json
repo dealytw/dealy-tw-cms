@@ -24,7 +24,7 @@
     },
     "coupon_uid": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true
     },
     "merchant": {

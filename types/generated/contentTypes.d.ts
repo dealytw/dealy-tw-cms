@@ -521,7 +521,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     default_affiliate_link: Schema.Attribute.String;
-    FAQs: Schema.Attribute.Component<'merchant.merchant-faqs', true>;
+    faqs: Schema.Attribute.Component<'merchant.merchant-faqs', true>;
     how_to: Schema.Attribute.Blocks;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -554,7 +554,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Useful_Links: Schema.Attribute.Component<
+    useful_links: Schema.Attribute.Component<
       'merchant.merchant-useful-links',
       true
     >;

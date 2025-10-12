@@ -1,6 +1,6 @@
 // Cloud-safe coupon lifecycles: no imports, no strict typing.
 
-// Position → max fake cap for that position within a merchant’s active list
+// Position → max fake cap for that position within a merchant's active list
 function capForPosition(pos: number) {
   const caps = [50, 45, 40, 35, 30, 25, 20, 15, 12, 10]; // pos 1..10
   const idx = Math.min(Math.max(pos, 1), caps.length) - 1;
@@ -29,15 +29,89 @@ async function countActiveForMerchant(merchantId?: number | string) {
   }
 }
 
+// Generate 10-digit alphanumeric UID
+function generateRandomUID(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 10; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Format merchant name for UID (lowercase, replace spaces with underscores)
+function formatMerchantName(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+}
+
+// Generate unique UID with merchant name prefix
+async function generateUniqueCouponUID(merchantName?: string): Promise<string> {
+  let attempts = 0;
+  const maxAttempts = 10;
+  
+  while (attempts < maxAttempts) {
+    const randomUID = generateRandomUID();
+    const uid = merchantName ? `${formatMerchantName(merchantName)}_${randomUID}` : randomUID;
+    
+    try {
+      const existing = await strapi.entityService.findMany('api::coupon.coupon', {
+        filters: { coupon_uid: uid },
+        limit: 1,
+      });
+      
+      if (!existing || existing.length === 0) {
+        return uid;
+      }
+    } catch (e) {
+      strapi.log.warn('[coupon lifecycles] UID uniqueness check failed:', e);
+      // If check fails, return the UID anyway (database unique constraint will catch duplicates)
+      return uid;
+    }
+    
+    attempts++;
+  }
+  
+  // Fallback: add timestamp to ensure uniqueness
+  const timestamp = Date.now().toString(36).slice(-4);
+  const randomUID = generateRandomUID().slice(0, 6);
+  return merchantName ? `${formatMerchantName(merchantName)}_${randomUID}${timestamp}` : `${randomUID}${timestamp}`;
+}
+
+// Get merchant name by ID
+async function getMerchantName(merchantId: number | string): Promise<string | undefined> {
+  try {
+    const merchant = await strapi.entityService.findOne('api::merchant.merchant', merchantId as any, {
+      fields: ['merchant_name'],
+    });
+    return merchant?.merchant_name;
+  } catch (e) {
+    strapi.log.warn('[coupon lifecycles] getMerchantName failed:', e);
+    return undefined;
+  }
+}
+
 
 export default {
   async beforeCreate(event: any) {
+    console.log('[COUPON LIFECYCLE] beforeCreate triggered', { data: event.params?.data });
     const data = event.params?.data || {};
 
-    // Ensure UID
-    if (!data.coupon_uid) {
-      const rand = Math.random().toString(36).slice(2, 8);
-      data.coupon_uid = `${Date.now().toString(36)}-${rand}`;
+    // Always generate UID if empty, null, or just whitespace
+    if (!data.coupon_uid || data.coupon_uid.trim() === '') {
+      console.log('[COUPON LIFECYCLE] Generating UID for coupon');
+      let merchantName: string | undefined;
+      
+      // Get merchant name if merchant relation is provided
+      if (data.merchant) {
+        console.log('[COUPON LIFECYCLE] Getting merchant name for:', data.merchant);
+        merchantName = await getMerchantName(data.merchant);
+        console.log('[COUPON LIFECYCLE] Merchant name:', merchantName);
+      }
+      
+      data.coupon_uid = await generateUniqueCouponUID(merchantName);
+      console.log('[COUPON LIFECYCLE] Generated UID:', data.coupon_uid);
+    } else {
+      console.log('[COUPON LIFECYCLE] UID already exists:', data.coupon_uid);
     }
 
     // Defaults
@@ -67,13 +141,36 @@ export default {
     const data = event.params?.data || {};
     if (!data) return;
 
-    if (data.coupon_uid === '' || data.coupon_uid == null) {
-      const rand = Math.random().toString(36).slice(2, 8);
-      data.coupon_uid = `${Date.now().toString(36)}-${rand}`;
+    // Regenerate UID if empty or if merchant relation changed
+    const shouldRegenerateUID = data.coupon_uid === '' || data.coupon_uid == null || data.merchant !== undefined;
+    
+    if (shouldRegenerateUID) {
+      let merchantName: string | undefined;
+      
+      // Get merchant name if merchant relation is provided
+      if (data.merchant) {
+        merchantName = await getMerchantName(data.merchant);
+      } else if (event.params?.where?.id) {
+        // If no merchant in data but we have an existing coupon, get current merchant
+        try {
+          const existingCoupon = await strapi.entityService.findOne('api::coupon.coupon', event.params.where.id, {
+            populate: { merchant: true },
+          });
+          if (existingCoupon && typeof existingCoupon === 'object' && 'merchant' in existingCoupon) {
+            const merchant = (existingCoupon as any).merchant;
+            if (merchant && typeof merchant === 'object' && 'merchant_name' in merchant) {
+              merchantName = merchant.merchant_name;
+            }
+          }
+        } catch (e) {
+          strapi.log.warn('[coupon lifecycles] Failed to get existing merchant:', e);
+        }
+      }
+      
+      data.coupon_uid = await generateUniqueCouponUID(merchantName);
     }
+    
     if (data.priority == null) data.priority = 0;
     if (data.clicks_real == null) data.clicks_real = 0;
-
-    // NOTE: no “recompute for merchant” here (keeps Cloud build simple).
   },
 };
