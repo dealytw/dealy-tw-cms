@@ -77,10 +77,33 @@ async function generateUniqueCouponUID(merchantName?: string): Promise<string> {
   return merchantName ? `${formatMerchantName(merchantName)}_${randomUID}${timestamp}` : `${randomUID}${timestamp}`;
 }
 
-// Get merchant name by ID
-async function getMerchantName(merchantId: number | string): Promise<string | undefined> {
+// Get merchant name by ID (handles both direct ID and relation objects)
+async function getMerchantName(merchantData: any): Promise<string | undefined> {
   try {
-    console.log('[COUPON LIFECYCLE] Getting merchant name for ID:', merchantId);
+    console.log('[COUPON LIFECYCLE] Getting merchant name for:', merchantData);
+    
+    let merchantId: number | string | undefined;
+    
+    // Handle different merchant data formats
+    if (typeof merchantData === 'number' || typeof merchantData === 'string') {
+      merchantId = merchantData;
+    } else if (merchantData && typeof merchantData === 'object') {
+      // Handle relation connect/disconnect format
+      if (merchantData.connect && merchantData.connect.length > 0) {
+        merchantId = merchantData.connect[0].id;
+      } else if (merchantData.set && merchantData.set.length > 0) {
+        merchantId = merchantData.set[0].id;
+      } else if (merchantData.id) {
+        merchantId = merchantData.id;
+      }
+    }
+    
+    if (!merchantId) {
+      console.log('[COUPON LIFECYCLE] No valid merchant ID found');
+      return undefined;
+    }
+    
+    console.log('[COUPON LIFECYCLE] Extracted merchant ID:', merchantId);
     const merchant = await strapi.entityService.findOne('api::merchant.merchant', merchantId as any, {
       fields: ['merchant_name'],
     });
