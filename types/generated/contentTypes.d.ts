@@ -426,9 +426,7 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     coupon_type: Schema.Attribute.Enumeration<
       ['promo_code', 'coupon', 'discount']
     >;
-    coupon_uid: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    coupon_uid: Schema.Attribute.String & Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

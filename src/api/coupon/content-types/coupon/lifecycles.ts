@@ -29,11 +29,11 @@ async function countActiveForMerchant(merchantId?: number | string) {
   }
 }
 
-// Generate 10-digit alphanumeric UID
+// Generate 12-digit alphanumeric UID
 function generateRandomUID(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 12; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
@@ -80,11 +80,14 @@ async function generateUniqueCouponUID(merchantName?: string): Promise<string> {
 // Get merchant name by ID
 async function getMerchantName(merchantId: number | string): Promise<string | undefined> {
   try {
+    console.log('[COUPON LIFECYCLE] Getting merchant name for ID:', merchantId);
     const merchant = await strapi.entityService.findOne('api::merchant.merchant', merchantId as any, {
       fields: ['merchant_name'],
     });
+    console.log('[COUPON LIFECYCLE] Found merchant:', merchant);
     return merchant?.merchant_name;
   } catch (e) {
+    console.log('[COUPON LIFECYCLE] getMerchantName failed:', e);
     strapi.log.warn('[coupon lifecycles] getMerchantName failed:', e);
     return undefined;
   }
@@ -142,7 +145,7 @@ export default {
     if (!data) return;
 
     // Regenerate UID if empty or if merchant relation changed
-    const shouldRegenerateUID = data.coupon_uid === '' || data.coupon_uid == null || data.merchant !== undefined;
+    const shouldRegenerateUID = data.coupon_uid === '' || data.coupon_uid == null || data.coupon_uid.trim() === '' || data.merchant !== undefined;
     
     if (shouldRegenerateUID) {
       let merchantName: string | undefined;
