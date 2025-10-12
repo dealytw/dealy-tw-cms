@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_merchant_merchant_useful_links",
+  "info": {
+    "displayName": "merchant_useful_links"
+  },
+  "options": {},
+  "attributes": {
+    "link_title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

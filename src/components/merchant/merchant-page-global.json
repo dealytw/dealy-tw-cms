@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_merchant_merchant_page_globals",
+  "info": {
+    "displayName": "merchant.page.global"
+  },
+  "options": {},
+  "attributes": {
+    "related_merchants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::merchant.merchant"
+    }
+  },
+  "config": {}
+}

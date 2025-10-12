@@ -521,6 +521,8 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     default_affiliate_link: Schema.Attribute.String;
+    FAQs: Schema.Attribute.Component<'merchant.merchant-faqs', true>;
+    how_to: Schema.Attribute.Blocks;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -536,17 +538,26 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<'coupon'>;
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    related_merchants: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::merchant.merchant'
+    >;
     robots: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'index,follow'>;
     seo_description: Schema.Attribute.Text;
     seo_title: Schema.Attribute.String;
     site_url: Schema.Attribute.String;
     slug: Schema.Attribute.UID<'merchant_name'>;
+    small_blog_section: Schema.Attribute.Blocks;
     store_description: Schema.Attribute.Blocks;
     summary: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    Useful_Links: Schema.Attribute.Component<
+      'merchant.merchant-useful-links',
+      true
+    >;
   };
 }
 

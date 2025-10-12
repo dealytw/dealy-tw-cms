@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_merchant_merchant_faqs",
+  "info": {
+    "displayName": "merchant_faqs"
+  },
+  "options": {},
+  "attributes": {
+    "Questions": {
+      "type": "string"
+    },
+    "Answer": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

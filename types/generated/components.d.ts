@@ -62,6 +62,41 @@ export interface HomepageHomeStoreSection extends Struct.ComponentSchema {
   };
 }
 
+export interface MerchantMerchantFaqs extends Struct.ComponentSchema {
+  collectionName: 'components_merchant_merchant_faqs';
+  info: {
+    displayName: 'merchant_faqs';
+  };
+  attributes: {
+    Answer: Schema.Attribute.Blocks;
+    Questions: Schema.Attribute.String;
+  };
+}
+
+export interface MerchantMerchantPageGlobal extends Struct.ComponentSchema {
+  collectionName: 'components_merchant_merchant_page_globals';
+  info: {
+    displayName: 'merchant.page.global';
+  };
+  attributes: {
+    related_merchants: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::merchant.merchant'
+    >;
+  };
+}
+
+export interface MerchantMerchantUsefulLinks extends Struct.ComponentSchema {
+  collectionName: 'components_merchant_merchant_useful_links';
+  info: {
+    displayName: 'merchant_useful_links';
+  };
+  attributes: {
+    link_title: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
 export interface TopicTopicCoupon extends Struct.ComponentSchema {
   collectionName: 'components_topic_topic_coupons';
   info: {
@@ -90,6 +125,9 @@ declare module '@strapi/strapi' {
       'homepage.home-hero': HomepageHomeHero;
       'homepage.home-shop-and-cat-ref': HomepageHomeShopAndCatRef;
       'homepage.home-store-section': HomepageHomeStoreSection;
+      'merchant.merchant-faqs': MerchantMerchantFaqs;
+      'merchant.merchant-page-global': MerchantMerchantPageGlobal;
+      'merchant.merchant-useful-links': MerchantMerchantUsefulLinks;
       'topic.topic-coupon': TopicTopicCoupon;
       'topic.topic-merchant': TopicTopicMerchant;
     }
