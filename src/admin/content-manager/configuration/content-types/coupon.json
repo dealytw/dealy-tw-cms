@@ -1,5 +1,6 @@
 {
   "settings": {
-    "mainField": "coupon_title"
+    "mainField": "coupon_title",
+    "pageSize": 100
   }
 }

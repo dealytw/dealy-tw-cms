@@ -1,5 +1,6 @@
 {
   "settings": {
-    "mainField": "merchant_name"
+    "mainField": "merchant_name",
+    "pageSize": 100
   }
 }
