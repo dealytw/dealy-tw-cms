@@ -1,31 +1,25 @@
+'use strict';
+
+console.log('🔥🔥🔥 MERCHANT LIFECYCLE FILE IS BEING LOADED! 🔥🔥🔥');
+
+// Strapi v5 lifecycle hook for merchant content type
 module.exports = {
-  async afterUpdate(event) {
-    try {
-      const result = event?.result || {};
-      const merchantId  = result.id;
-      const merchantDoc = result.documentId;
-      const order = Array.isArray(result.coupon_order) ? result.coupon_order : [];
+  async beforeCreate(event) {
+    console.log('🔥 MERCHANT LIFECYCLE: beforeCreate triggered');
+    const { data } = event.params;
+    if (data.merchant_name) {
+      data.page_title_h1 = `${data.merchant_name}優惠碼`;
+      console.log('🔥 MERCHANT LIFECYCLE: Auto-assigned page_title_h1:', `${data.merchant_name}優惠碼`);
+    }
+  },
 
-      const allCoupons = await strapi.entityService.findMany('api::coupon.coupon', {
-        filters: {
-          merchant: merchantDoc ? { documentId: merchantDoc } : { id: merchantId },
-        },
-        fields: ['id', 'documentId', 'priority'],
-        limit: 1000,
-      });
-
-      const wanted = order.map(String);
-      const rank = new Map(wanted.map((id, idx) => [id, idx + 1]));
-
-      let next = wanted.length + 1;
-      await Promise.allSettled(
-        allCoupons.map(c => {
-          const pr = rank.get(String(c.id)) ?? next++;
-          return strapi.entityService.update('api::coupon.coupon', c.id, { data: { priority: pr } });
-        })
-      );
-    } catch (e) {
-      strapi.log.error('[priority-sync] failed', e);
+  async beforeUpdate(event) {
+    console.log('🔥 MERCHANT LIFECYCLE: beforeUpdate triggered');
+    const { data } = event.params;
+    // Only recompute if merchant_name changes or if page_title_h1 is empty
+    if (typeof data.merchant_name !== 'undefined') {
+      data.page_title_h1 = `${data.merchant_name}優惠碼`;
+      console.log('🔥 MERCHANT LIFECYCLE: Auto-updated page_title_h1:', `${data.merchant_name}優惠碼`);
     }
   },
 };

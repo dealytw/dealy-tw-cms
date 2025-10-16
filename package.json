@@ -12,7 +12,8 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "smoke:lifecycle": "node ./scripts/smoke-lifecycle.mjs"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.22.0",

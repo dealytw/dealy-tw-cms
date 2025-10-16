@@ -22,14 +22,14 @@ async function fetchCouponsByMerchantCM(get, merchantDocumentId) {
   );
   const list = res?.data?.results ?? [];
   return list.map((row) => ({
-    id: row?.documentId ?? row?.id,
-    title: row?.coupon_title ?? '',
+    id: row?.documentId ?? row?.id ?? String(row),   // always a string
+    title: row?.coupon_title ?? row?.attributes?.coupon_title ?? '',
   }));
 }
 
 function CouponToolsPanel() {
   const ctx = useContentManagerContext();
-  const { get, post } = useFetchClient();
+  const { get, put } = useFetchClient();
 
   // Be liberal in what we accept (v5.22 variations)
   const uid = ctx?.model || ctx?.contentType?.uid;
@@ -58,8 +58,8 @@ function CouponToolsPanel() {
     const rel = ctx?.document?.[RELATION_KEY];
     if (!Array.isArray(rel)) return [];
     return rel.map((r) => ({
-      id: r?.documentId ?? r?.id,
-      title: r?.coupon_title ?? r?.title ?? '',
+      id: r?.documentId ?? r?.id ?? String(r),   // always a string
+      title: r?.coupon_title ?? r?.title ?? r?.attributes?.coupon_title ?? '',
     }));
   }, [JSON.stringify(ctx?.document?.[RELATION_KEY] || [])]);
 
@@ -133,19 +133,31 @@ function CouponToolsPanel() {
 
   const applyOrder = async () => {
     if (!(isMerchant && isEdit)) return;
-    const ids = items.map((r) => r.id).filter(Boolean);
+
+    // Prefer the visible list (items). Fall back to relationFromForm if needed.
+    const source = (Array.isArray(items) && items.length) ? items : relationFromForm;
+    
+    // store coupon **documentIds** – they are stable in v5
+    const ids = source.map((r) => r.documentId ?? r.id).filter(Boolean);
     if (!ids.length) {
       setMsg('No coupons to order.');
       return;
     }
+
     try {
       setBusy(true);
       setMsg(null);
-      await post(`/api/merchants/${merchantId}/reorder-coupons`, { couponIds: ids });
-      setMsg('Saved order → priority 1..n');
+
+      // persist immediately so a refresh won't lose it
+      await put(
+        `/content-manager/collection-types/api::merchant.merchant/${merchantId}`,
+        { data: { coupon_order: ids } }
+      );
+
+      setMsg('Order saved to merchant.coupon_order. Click Save to trigger lifecycle.');
     } catch (e) {
-      console.error(e);
-      setMsg(e?.response?.data?.error?.message || 'Failed to save order');
+      console.error('[coupon-tools] save failed', e);
+      setMsg('Failed to save order to merchant');
     } finally {
       setBusy(false);
     }

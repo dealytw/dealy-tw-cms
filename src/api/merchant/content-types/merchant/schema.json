@@ -114,6 +114,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::merchant.merchant"
+    },
+    "coupon_order": {
+      "type": "json"
     }
   }
 }

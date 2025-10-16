@@ -1,3 +1,7 @@
+'use strict';
+
+console.log('🔥🔥🔥 COUPON LIFECYCLE FILE IS BEING LOADED! 🔥🔥🔥');
+
 // Cloud-safe coupon lifecycles: no imports, no strict typing.
 
 // Position → max fake cap for that position within a merchant's active list
@@ -117,7 +121,7 @@ async function getMerchantName(merchantData) {
 }
 
 
-export default {
+module.exports = {
   async beforeCreate(event) {
     console.log('[COUPON LIFECYCLE] beforeCreate triggered', { data: event.params?.data });
     const data = event.params?.data || {};

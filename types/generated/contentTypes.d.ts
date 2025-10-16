@@ -514,6 +514,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     active_coupon_title_h2: Schema.Attribute.String;
     canonical_url: Schema.Attribute.String;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
+    coupon_order: Schema.Attribute.JSON;
     coupons: Schema.Attribute.Relation<'oneToMany', 'api::coupon.coupon'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
