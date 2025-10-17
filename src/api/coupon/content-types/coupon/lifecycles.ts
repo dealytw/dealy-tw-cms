@@ -17,19 +17,23 @@ function fakeCountForPosition(pos: number): number {
   return Math.floor(low + Math.random() * (cap - low + 1));
 }
 
-async function countActiveForMerchant(merchantId?: number | string): Promise<number> {
-  if (!merchantId) return 0;
+// Get next priority for merchant (n+1 pattern)
+async function getNextPriorityForMerchant(merchantId?: number | string): Promise<number | null> {
+  if (!merchantId) return null; // Leave null if no merchant
+  
   try {
-    return await strapi.entityService.count('api::coupon.coupon', {
+    const count = await strapi.entityService.count('api::coupon.coupon', {
       filters: {
-        // Type-safe relation filter:
         merchant: { id: merchantId as any },
         coupon_status: 'active',
-      } as any, // keep TS calm on nested types
+      } as any,
     });
+    
+    // Return n+1 (next priority)
+    return (count || 0) + 1;
   } catch (e) {
-    strapi.log.warn('[coupon lifecycles] countActiveForMerchant failed:', e);
-    return 0;
+    strapi.log.warn('[coupon lifecycles] getNextPriorityForMerchant failed:', e);
+    return null; // Return null on error
   }
 }
 
@@ -146,8 +150,28 @@ export default {
       console.log('[COUPON LIFECYCLE] UID already exists:', data.coupon_uid);
     }
 
-    // Defaults
-    if (data.priority == null) data.priority = 0;
+    // Handle priority: auto-assign based on merchant relation (n+1 pattern)
+    if (data.priority == null) {
+      let merchantId: number | string | undefined;
+      
+      // Extract merchant ID from different formats
+      if (typeof data.merchant === 'number' || typeof data.merchant === 'string') {
+        merchantId = data.merchant;
+      } else if (data.merchant && typeof data.merchant === 'object') {
+        if (data.merchant.connect && data.merchant.connect.length > 0) {
+          merchantId = data.merchant.connect[0].id;
+        } else if (data.merchant.set && data.merchant.set.length > 0) {
+          merchantId = data.merchant.set[0].id;
+        } else if (data.merchant.id) {
+          merchantId = data.merchant.id;
+        }
+      }
+      
+      // Get next priority for merchant (n+1), or leave null if no merchant
+      data.priority = await getNextPriorityForMerchant(merchantId);
+      console.log('[COUPON LIFECYCLE] Assigned priority:', data.priority, 'for merchant:', merchantId);
+    }
+    
     if (data.clicks_real == null) data.clicks_real = 0;
 
     // Seed a fake base for display_count once
@@ -202,7 +226,45 @@ export default {
       data.coupon_uid = await generateUniqueCouponUID(merchantName);
     }
     
-    if (data.priority == null) data.priority = 0;
+    // Handle priority: auto-assign based on merchant relation (n+1 pattern) if null
+    if (data.priority == null) {
+      let merchantId: number | string | undefined;
+      
+      // Extract merchant ID from different formats
+      if (typeof data.merchant === 'number' || typeof data.merchant === 'string') {
+        merchantId = data.merchant;
+      } else if (data.merchant && typeof data.merchant === 'object') {
+        if (data.merchant.connect && data.merchant.connect.length > 0) {
+          merchantId = data.merchant.connect[0].id;
+        } else if (data.merchant.set && data.merchant.set.length > 0) {
+          merchantId = data.merchant.set[0].id;
+        } else if (data.merchant.id) {
+          merchantId = data.merchant.id;
+        }
+      }
+      
+      // If no merchant in update data, try to get from existing coupon
+      if (!merchantId && event.params?.where?.id) {
+        try {
+          const existingCoupon = await strapi.entityService.findOne('api::coupon.coupon', event.params.where.id, {
+            populate: { merchant: true },
+          });
+          if (existingCoupon && typeof existingCoupon === 'object' && 'merchant' in existingCoupon) {
+            const merchant = (existingCoupon as any).merchant;
+            if (merchant && typeof merchant === 'object' && 'id' in merchant) {
+              merchantId = merchant.id;
+            }
+          }
+        } catch (e) {
+          strapi.log.warn('[coupon lifecycles] Failed to get existing merchant for priority:', e);
+        }
+      }
+      
+      // Get next priority for merchant (n+1), or leave null if no merchant
+      data.priority = await getNextPriorityForMerchant(merchantId);
+      console.log('[COUPON LIFECYCLE] Updated priority:', data.priority, 'for merchant:', merchantId);
+    }
+    
     if (data.clicks_real == null) data.clicks_real = 0;
   },
 };
