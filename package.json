@@ -16,6 +16,7 @@
     "smoke:lifecycle": "node ./scripts/smoke-lifecycle.mjs"
   },
   "dependencies": {
+    "@koa/router": "^14.0.0",
     "@strapi/plugin-cloud": "5.22.0",
     "@strapi/plugin-users-permissions": "5.22.0",
     "@strapi/strapi": "5.22.0",

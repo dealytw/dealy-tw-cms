@@ -4,6 +4,7 @@ import {
   unstable_useContentManagerContext as useContentManagerContext,
   useFetchClient,
 } from '@strapi/strapi/admin';
+import { unstable_useContentManagerContext } from '@strapi/content-manager/strapi-admin';
 
 const MERCHANT_UID = 'api::merchant.merchant';
 const RELATION_KEY = 'coupons';
@@ -29,6 +30,7 @@ async function fetchCouponsByMerchantCM(get, merchantDocumentId) {
 
 function CouponToolsPanel() {
   const ctx = useContentManagerContext();
+  const cmCtx = unstable_useContentManagerContext();
   const { get, put } = useFetchClient();
 
   // Be liberal in what we accept (v5.22 variations)
@@ -131,15 +133,27 @@ function CouponToolsPanel() {
     })();
   }, [get, status, isMerchant, isEdit, merchantId, relationFromForm]);
 
-  const applyOrder = async () => {
-    if (!(isMerchant && isEdit)) return;
-
-    // Prefer the visible list (items). Fall back to relationFromForm if needed.
+  // Build the order array from your DnD state
+  const getIds = () => {
     const source = (Array.isArray(items) && items.length) ? items : relationFromForm;
+    return source.map(r => r.documentId ?? r.id).filter(Boolean);
+  };
+
+  const applyOrder = async () => {
+    console.log('[coupon-tools] applyOrder clicked!');
+    console.log('[coupon-tools] isMerchant:', isMerchant, 'isEdit:', isEdit);
     
-    // store coupon **documentIds** – they are stable in v5
-    const ids = source.map((r) => r.documentId ?? r.id).filter(Boolean);
+    if (!(isMerchant && isEdit)) {
+      console.log('[coupon-tools] Not a merchant edit view, returning');
+      return;
+    }
+    
+    // Build ids: prefer documentId (v5), fall back to id
+    const ids = getIds();
+    console.log('[coupon-tools] extracted ids:', ids);
+    
     if (!ids.length) {
+      console.log('[coupon-tools] No IDs found, showing message');
       setMsg('No coupons to order.');
       return;
     }
@@ -148,13 +162,33 @@ function CouponToolsPanel() {
       setBusy(true);
       setMsg(null);
 
-      // persist immediately so a refresh won't lose it
-      await put(
-        `/content-manager/collection-types/api::merchant.merchant/${merchantId}`,
-        { data: { coupon_order: ids } }
-      );
+      // Always send JSON object; it's easier to evolve later
+      const base = window?.strapi?.backendURL || '';
+      const url = `${base}/api/merchants/${merchantId}/coupons/reorder`;
+      console.log('[coupon-tools] Making request to:', url);
+      console.log('[coupon-tools] Request payload:', { ids });
 
-      setMsg('Order saved to merchant.coupon_order. Click Save to trigger lifecycle.');
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }), // <— object with an "ids" array
+      });
+      console.log('[coupon-tools] Response status:', res.status);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.log('[coupon-tools] Error response:', errorText);
+        throw new Error(errorText);
+      }
+
+      const result = await res.json();
+      console.log('[coupon-tools] Success response:', result);
+
+      // Force the CM form to show it (no reload)
+      cmCtx?.setFieldValue?.('coupon_order', JSON.parse(JSON.stringify(ids))); // new ref helps re-render
+      cmCtx?.setModifiedState?.(true); // optional: make the Save button light up
+
+      setMsg('排序已儲存到 coupon_order（JSON）。之後按「保存/發佈」套用優先順序。');
     } catch (e) {
       console.error('[coupon-tools] save failed', e);
       setMsg('Failed to save order to merchant');
@@ -244,6 +278,22 @@ function CouponToolsPanel() {
             </button>
 
             {msg && <div style={{ marginTop: 8, fontSize: 12, opacity: 0.85 }}>{msg}</div>}
+            
+            {/* Debug: Show current JSON order */}
+            <div style={{ marginTop: 12, fontSize: 11, opacity: 0.7 }}>
+              <strong>Current order (JSON):</strong>
+              <pre style={{ 
+                marginTop: 4, 
+                maxHeight: 120, 
+                overflow: 'auto', 
+                background: 'rgba(0,0,0,0.1)', 
+                padding: 8, 
+                borderRadius: 4,
+                fontSize: 10
+              }}>
+                {JSON.stringify(getIds(), null, 2)}
+              </pre>
+            </div>
           </>
         )}
       </div>
