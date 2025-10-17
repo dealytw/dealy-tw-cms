@@ -1,8 +1,10 @@
-'use strict';
+/**
+ * merchant controller
+ */
 
-const { factories } = require('@strapi/strapi');
+import { factories } from '@strapi/strapi';
 
-module.exports = factories.createCoreController('api::merchant.merchant', ({ strapi }) => ({
+export default factories.createCoreController('api::merchant.merchant', ({ strapi }) => ({
   // POST /api/merchants/:id/coupons/reorder
   async reorderCoupons(ctx) {
     const { id: merchantId } = ctx.params;
