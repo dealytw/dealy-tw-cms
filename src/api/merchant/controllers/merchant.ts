@@ -1,10 +1,8 @@
-/**
- * merchant controller
- */
+﻿'use strict';
 
-import { factories } from '@strapi/strapi';
+const { factories } = require('@strapi/strapi');
 
-export default factories.createCoreController('api::merchant.merchant', ({ strapi }) => ({
+module.exports = factories.createCoreController('api::merchant.merchant', ({ strapi }) => ({
   // POST /api/merchants/:id/coupons/reorder
   async reorderCoupons(ctx) {
     const { id: merchantId } = ctx.params;
@@ -15,7 +13,7 @@ export default factories.createCoreController('api::merchant.merchant', ({ strap
     // (Optional) ensure all coupon ids belong to this merchant
     const owned = await strapi.documents('api::coupon.coupon').findMany({
       filters: { documentId: { $in: ids }, merchant: merchantId },
-      fields: ['id'], // Fixed: use 'id' instead of 'documentId' for TypeScript
+      fields: ['documentId'],
       limit: ids.length,
     });
     if (owned.length !== ids.length) return ctx.badRequest('Some coupon ids do not belong to this merchant');
