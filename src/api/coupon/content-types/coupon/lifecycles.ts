@@ -5,27 +5,27 @@ console.log('🔥🔥🔥 COUPON LIFECYCLE FILE IS BEING LOADED! 🔥🔥🔥');
 // Cloud-safe coupon lifecycles: no imports, no strict typing.
 
 // Position → max fake cap for that position within a merchant's active list
-function capForPosition(pos) {
+function capForPosition(pos: number): number {
   const caps = [50, 45, 40, 35, 30, 25, 20, 15, 12, 10]; // pos 1..10
   const idx = Math.min(Math.max(pos, 1), caps.length) - 1;
   return caps[idx];
 }
 
-function fakeCountForPosition(pos) {
+function fakeCountForPosition(pos: number): number {
   const cap = capForPosition(pos);
   const low = Math.max(5, cap - 10);
   return Math.floor(low + Math.random() * (cap - low + 1));
 }
 
-async function countActiveForMerchant(merchantId) {
+async function countActiveForMerchant(merchantId?: number | string): Promise<number> {
   if (!merchantId) return 0;
   try {
     return await strapi.entityService.count('api::coupon.coupon', {
       filters: {
         // Type-safe relation filter:
-        merchant: { id: merchantId },
+        merchant: { id: merchantId as any },
         coupon_status: 'active',
-      },
+      } as any, // keep TS calm on nested types
     });
   } catch (e) {
     strapi.log.warn('[coupon lifecycles] countActiveForMerchant failed:', e);
@@ -34,7 +34,7 @@ async function countActiveForMerchant(merchantId) {
 }
 
 // Generate 12-digit alphanumeric UID
-function generateRandomUID() {
+function generateRandomUID(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
   for (let i = 0; i < 12; i++) {
@@ -43,19 +43,20 @@ function generateRandomUID() {
   return result;
 }
 
-// Format merchant name for UID (lowercase, replace spaces with underscores)
-function formatMerchantName(name) {
-  return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+// Format merchant name for UID (lowercase, replace spaces with hyphens)
+function formatMerchantName(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
 // Generate unique UID with merchant name prefix
-async function generateUniqueCouponUID(merchantName) {
+async function generateUniqueCouponUID(merchantName?: string): Promise<string> {
   let attempts = 0;
   const maxAttempts = 10;
   
   while (attempts < maxAttempts) {
     const randomUID = generateRandomUID();
-    const uid = merchantName ? `${formatMerchantName(merchantName)}_${randomUID}` : randomUID;
+    // CHANGED: Use hyphen (-) instead of underscore (_)
+    const uid = merchantName ? `${formatMerchantName(merchantName)}-${randomUID}` : randomUID;
     
     try {
       const existing = await strapi.entityService.findMany('api::coupon.coupon', {
@@ -78,15 +79,16 @@ async function generateUniqueCouponUID(merchantName) {
   // Fallback: add timestamp to ensure uniqueness
   const timestamp = Date.now().toString(36).slice(-4);
   const randomUID = generateRandomUID().slice(0, 6);
-  return merchantName ? `${formatMerchantName(merchantName)}_${randomUID}${timestamp}` : `${randomUID}${timestamp}`;
+  // CHANGED: Use hyphen (-) instead of underscore (_)
+  return merchantName ? `${formatMerchantName(merchantName)}-${randomUID}${timestamp}` : `${randomUID}${timestamp}`;
 }
 
 // Get merchant name by ID (handles both direct ID and relation objects)
-async function getMerchantName(merchantData) {
+async function getMerchantName(merchantData: any): Promise<string | undefined> {
   try {
     console.log('[COUPON LIFECYCLE] Getting merchant name for:', merchantData);
     
-    let merchantId;
+    let merchantId: number | string | undefined;
     
     // Handle different merchant data formats
     if (typeof merchantData === 'number' || typeof merchantData === 'string') {
@@ -108,7 +110,7 @@ async function getMerchantName(merchantData) {
     }
     
     console.log('[COUPON LIFECYCLE] Extracted merchant ID:', merchantId);
-    const merchant = await strapi.entityService.findOne('api::merchant.merchant', merchantId, {
+    const merchant = await strapi.entityService.findOne('api::merchant.merchant', merchantId as any, {
       fields: ['merchant_name'],
     });
     console.log('[COUPON LIFECYCLE] Found merchant:', merchant);
@@ -121,15 +123,15 @@ async function getMerchantName(merchantData) {
 }
 
 
-module.exports = {
-  async beforeCreate(event) {
+export default {
+  async beforeCreate(event: any) {
     console.log('[COUPON LIFECYCLE] beforeCreate triggered', { data: event.params?.data });
     const data = event.params?.data || {};
 
     // Always generate UID if empty, null, or just whitespace
     if (!data.coupon_uid || data.coupon_uid.trim() === '') {
       console.log('[COUPON LIFECYCLE] Generating UID for coupon');
-      let merchantName;
+      let merchantName: string | undefined;
       
       // Get merchant name if merchant relation is provided
       if (data.merchant) {
@@ -150,7 +152,7 @@ module.exports = {
 
     // Seed a fake base for display_count once
     if (data.display_count == null) {
-      let merchantId;
+      let merchantId: number | string | undefined;
 
       // in create, merchant is usually a numeric id
       if (typeof data.merchant === 'number' || typeof data.merchant === 'string') {
@@ -167,7 +169,7 @@ module.exports = {
     }
   },
 
-  async beforeUpdate(event) {
+  async beforeUpdate(event: any) {
     const data = event.params?.data || {};
     if (!data) return;
 
@@ -175,7 +177,7 @@ module.exports = {
     const shouldRegenerateUID = data.coupon_uid === '' || data.coupon_uid == null || data.coupon_uid.trim() === '' || data.merchant !== undefined;
     
     if (shouldRegenerateUID) {
-      let merchantName;
+      let merchantName: string | undefined;
       
       // Get merchant name if merchant relation is provided
       if (data.merchant) {
@@ -187,7 +189,7 @@ module.exports = {
             populate: { merchant: true },
           });
           if (existingCoupon && typeof existingCoupon === 'object' && 'merchant' in existingCoupon) {
-            const merchant = existingCoupon.merchant;
+            const merchant = (existingCoupon as any).merchant;
             if (merchant && typeof merchant === 'object' && 'merchant_name' in merchant) {
               merchantName = merchant.merchant_name;
             }
