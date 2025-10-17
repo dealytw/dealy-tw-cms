@@ -17,17 +17,28 @@ function fakeCountForPosition(pos: number): number {
   return Math.floor(low + Math.random() * (cap - low + 1));
 }
 
+async function countActiveForMerchant(merchantId?: number | string): Promise<number> {
+  if (!merchantId) return 0;
+  try {
+    return await strapi.entityService.count('api::coupon.coupon', {
+      filters: {
+        // Type-safe relation filter:
+        merchant: { id: merchantId as any },
+        coupon_status: 'active',
+      } as any, // keep TS calm on nested types
+    });
+  } catch (e) {
+    strapi.log.warn('[coupon lifecycles] countActiveForMerchant failed:', e);
+    return 0;
+  }
+}
+
 // Get next priority for merchant (n+1 pattern)
 async function getNextPriorityForMerchant(merchantId?: number | string): Promise<number | null> {
   if (!merchantId) return null; // Leave null if no merchant
   
   try {
-    const count = await strapi.entityService.count('api::coupon.coupon', {
-      filters: {
-        merchant: { id: merchantId as any },
-        coupon_status: 'active',
-      } as any,
-    });
+    const count = await countActiveForMerchant(merchantId);
     
     // Return n+1 (next priority)
     return (count || 0) + 1;
