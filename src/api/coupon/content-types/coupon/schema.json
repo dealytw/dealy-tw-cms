@@ -20,7 +20,7 @@
     },
     "coupon_title": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "coupon_uid": {
       "type": "string",
@@ -49,7 +49,7 @@
     },
     "affiliate_link": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": false
     },
     "description": {

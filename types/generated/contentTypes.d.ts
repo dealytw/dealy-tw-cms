@@ -416,13 +416,13 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    affiliate_link: Schema.Attribute.String & Schema.Attribute.Required;
+    affiliate_link: Schema.Attribute.String;
     code: Schema.Attribute.String;
     coupon_status: Schema.Attribute.Enumeration<
       ['active', 'expired', 'scheduled', 'archived']
     > &
       Schema.Attribute.DefaultTo<'active'>;
-    coupon_title: Schema.Attribute.String & Schema.Attribute.Required;
+    coupon_title: Schema.Attribute.String;
     coupon_type: Schema.Attribute.Enumeration<
       ['promo_code', 'coupon', 'discount']
     >;
