@@ -103,9 +103,7 @@
       "repeatable": true
     },
     "faqs": {
-      "type": "component",
-      "component": "merchant.merchant-faqs",
-      "repeatable": true
+      "type": "blocks"
     },
     "small_blog_section": {
       "type": "blocks"
