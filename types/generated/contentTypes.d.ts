@@ -520,7 +520,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     default_affiliate_link: Schema.Attribute.String;
-    faqs: Schema.Attribute.Component<'merchant.merchant-faqs', true>;
+    faqs: Schema.Attribute.Blocks;
     how_to: Schema.Attribute.Blocks;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
