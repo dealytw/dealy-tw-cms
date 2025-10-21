@@ -446,6 +446,7 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     starts_at: Schema.Attribute.Date;
+    topics: Schema.Attribute.Relation<'manyToMany', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -550,6 +551,7 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     small_blog_section: Schema.Attribute.Blocks;
     store_description: Schema.Attribute.Blocks;
     summary: Schema.Attribute.Text;
+    topics: Schema.Attribute.Relation<'manyToMany', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -609,14 +611,14 @@ export interface ApiTopicTopic extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    coupons: Schema.Attribute.Relation<'manyToMany', 'api::coupon.coupon'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    featured_merchants: Schema.Attribute.Component<
-      'topic.topic-merchant',
-      true
+    featured_merchants: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::merchant.merchant'
     >;
-    flash_deals: Schema.Attribute.Component<'topic.topic-coupon', true>;
     intro: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::topic.topic'> &

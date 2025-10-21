@@ -34,14 +34,16 @@
       "type": "text"
     },
     "featured_merchants": {
-      "type": "component",
-      "component": "topic.topic-merchant",
-      "repeatable": true
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::merchant.merchant",
+      "mappedBy": "topics"
     },
-    "flash_deals": {
-      "type": "component",
-      "component": "topic.topic-coupon",
-      "repeatable": true
+    "coupons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::coupon.coupon",
+      "mappedBy": "topics"
     }
   }
 }

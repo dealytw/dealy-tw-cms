@@ -87,6 +87,12 @@
     "display_count": {
       "type": "integer",
       "default": 0
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::topic.topic",
+      "inversedBy": "coupons"
     }
   }
 }
