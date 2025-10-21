@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "topics",
+  "collectionName": "special_offers",
   "info": {
-    "singularName": "topic",
-    "pluralName": "topics",
-    "displayName": "Topic"
+    "singularName": "special-offer",
+    "pluralName": "special-offers",
+    "displayName": "SpecialOffer"
   },
   "options": {
     "draftAndPublish": true
@@ -15,35 +15,34 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::site.site",
-      "inversedBy": "topics"
+      "inversedBy": "special_offers"
     },
     "title": {
       "type": "string"
     },
     "slug": {
-      "type": "uid",
-      "targetField": "title"
+      "type": "uid"
     },
     "intro": {
-      "type": "text"
+      "type": "string"
     },
     "seo_title": {
       "type": "string"
     },
     "seo_description": {
-      "type": "text"
+      "type": "string"
     },
-    "featured_merchants": {
+    "featured_merchant": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::merchant.merchant",
-      "mappedBy": "topics"
+      "inversedBy": "special_offers"
     },
-    "coupons": {
+    "coupon": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::coupon.coupon",
-      "mappedBy": "topics"
+      "inversedBy": "special_offers"
     }
   }
 }

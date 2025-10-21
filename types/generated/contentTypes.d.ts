@@ -445,8 +445,11 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     merchant: Schema.Attribute.Relation<'manyToOne', 'api::merchant.merchant'>;
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    special_offers: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::special-offer.special-offer'
+    >;
     starts_at: Schema.Attribute.Date;
-    topics: Schema.Attribute.Relation<'manyToMany', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -549,9 +552,12 @@ export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
     site_url: Schema.Attribute.String;
     slug: Schema.Attribute.UID<'merchant_name'>;
     small_blog_section: Schema.Attribute.Blocks;
+    special_offers: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::special-offer.special-offer'
+    >;
     store_description: Schema.Attribute.Blocks;
     summary: Schema.Attribute.Text;
-    topics: Schema.Attribute.Relation<'manyToMany', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -593,41 +599,48 @@ export interface ApiSiteSite extends Struct.CollectionTypeSchema {
     merchants: Schema.Attribute.Relation<'oneToMany', 'api::merchant.merchant'>;
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    topics: Schema.Attribute.Relation<'oneToMany', 'api::topic.topic'>;
+    special_offers: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::special-offer.special-offer'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
   };
 }
 
-export interface ApiTopicTopic extends Struct.CollectionTypeSchema {
-  collectionName: 'topics';
+export interface ApiSpecialOfferSpecialOffer
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'special_offers';
   info: {
-    displayName: 'Topic';
-    pluralName: 'topics';
-    singularName: 'topic';
+    displayName: 'SpecialOffer';
+    pluralName: 'special-offers';
+    singularName: 'special-offer';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    coupons: Schema.Attribute.Relation<'manyToMany', 'api::coupon.coupon'>;
+    coupon: Schema.Attribute.Relation<'manyToOne', 'api::coupon.coupon'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    featured_merchants: Schema.Attribute.Relation<
-      'manyToMany',
+    featured_merchant: Schema.Attribute.Relation<
+      'manyToOne',
       'api::merchant.merchant'
     >;
-    intro: Schema.Attribute.Text;
+    intro: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::topic.topic'> &
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::special-offer.special-offer'
+    > &
       Schema.Attribute.Private;
     market: Schema.Attribute.Relation<'manyToOne', 'api::site.site'>;
     publishedAt: Schema.Attribute.DateTime;
-    seo_description: Schema.Attribute.Text;
+    seo_description: Schema.Attribute.String;
     seo_title: Schema.Attribute.String;
-    slug: Schema.Attribute.UID<'title'>;
+    slug: Schema.Attribute.UID;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1149,7 +1162,7 @@ declare module '@strapi/strapi' {
       'api::home-page.home-page': ApiHomePageHomePage;
       'api::merchant.merchant': ApiMerchantMerchant;
       'api::site.site': ApiSiteSite;
-      'api::topic.topic': ApiTopicTopic;
+      'api::special-offer.special-offer': ApiSpecialOfferSpecialOffer;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

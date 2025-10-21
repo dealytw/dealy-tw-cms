@@ -7,11 +7,6 @@
   "attributes": {
     "heading": {
       "type": "string"
-    },
-    "topics": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::topic.topic"
     }
   },
   "config": {}

@@ -116,11 +116,11 @@
     "coupon_order": {
       "type": "json"
     },
-    "topics": {
+    "special_offers": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::topic.topic",
-      "inversedBy": "featured_merchants"
+      "relation": "oneToMany",
+      "target": "api::special-offer.special-offer",
+      "mappedBy": "featured_merchant"
     }
   }
 }

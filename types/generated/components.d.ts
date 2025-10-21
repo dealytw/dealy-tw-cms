@@ -7,7 +7,6 @@ export interface HomepageHomeCategorySection extends Struct.ComponentSchema {
   };
   attributes: {
     heading: Schema.Attribute.String;
-    topics: Schema.Attribute.Relation<'oneToMany', 'api::topic.topic'>;
   };
 }
 

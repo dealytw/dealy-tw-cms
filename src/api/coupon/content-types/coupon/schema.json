@@ -88,11 +88,11 @@
       "type": "integer",
       "default": 0
     },
-    "topics": {
+    "special_offers": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::topic.topic",
-      "inversedBy": "coupons"
+      "relation": "oneToMany",
+      "target": "api::special-offer.special-offer",
+      "mappedBy": "coupon"
     }
   }
 }

@@ -43,16 +43,16 @@
       "target": "api::coupon.coupon",
       "mappedBy": "market"
     },
-    "topics": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::topic.topic",
-      "mappedBy": "market"
-    },
     "categories": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::category.category",
+      "mappedBy": "market"
+    },
+    "special_offers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::special-offer.special-offer",
       "mappedBy": "market"
     }
   }
