@@ -3,10 +3,14 @@ import type { Schema, Struct } from '@strapi/strapi';
 export interface HomepageHomeCategorySection extends Struct.ComponentSchema {
   collectionName: 'components_homepage_home_category_sections';
   info: {
-    displayName: 'home.category-section';
+    displayName: 'home.special-offers-section';
   };
   attributes: {
     heading: Schema.Attribute.String;
+    special_offers: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::special-offer.special-offer'
+    >;
   };
 }
 

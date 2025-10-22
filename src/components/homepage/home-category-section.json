@@ -1,12 +1,17 @@
 {
   "collectionName": "components_homepage_home_category_sections",
   "info": {
-    "displayName": "home.category-section"
+    "displayName": "home.special-offers-section"
   },
   "options": {},
   "attributes": {
     "heading": {
       "type": "string"
+    },
+    "special_offers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::special-offer.special-offer"
     }
   },
   "config": {}
