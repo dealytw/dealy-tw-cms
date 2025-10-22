@@ -503,6 +503,35 @@ export interface ApiHomePageHomePage extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiLegalPageLegalPage extends Struct.CollectionTypeSchema {
+  collectionName: 'legal_pages';
+  info: {
+    displayName: 'LegalPage';
+    pluralName: 'legal-pages';
+    singularName: 'legal-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    content: Schema.Attribute.Blocks;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::legal-page.legal-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiMerchantMerchant extends Struct.CollectionTypeSchema {
   collectionName: 'merchants';
   info: {
@@ -1160,6 +1189,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::coupon.coupon': ApiCouponCoupon;
       'api::home-page.home-page': ApiHomePageHomePage;
+      'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::merchant.merchant': ApiMerchantMerchant;
       'api::site.site': ApiSiteSite;
       'api::special-offer.special-offer': ApiSpecialOfferSpecialOffer;

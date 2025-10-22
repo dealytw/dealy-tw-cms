@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "legal_pages",
+  "info": {
+    "singularName": "legal-page",
+    "pluralName": "legal-pages",
+    "displayName": "LegalPage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "blocks"
+    }
+  }
+}
