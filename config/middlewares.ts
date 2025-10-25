@@ -3,7 +3,7 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['http://localhost:8080','http://localhost:8081','https://cms.dealy.tw','https://admin.dealy.tw'], // Added admin app domain
+      origin: ['http://localhost:8080','http://localhost:8081','https://cms.dealy.tw','https://admin.dealy.tw','https://dealy-admin-rk2cncpjz-dealy-coupon-sites-projects.vercel.app'], // Added Vercel admin app URL
       methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
       headers: '*',
       credentials: true,
